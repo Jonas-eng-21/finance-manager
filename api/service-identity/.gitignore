@@ -1,0 +1,82 @@
+##################################
+# Environment
+##################################
+.env
+.env.*
+!.env.example
+
+##################################
+# Dependencies
+##################################
+/vendor
+/node_modules
+npm-debug.log
+yarn-error.log
+
+##################################
+# Build / Frontend
+##################################
+/public/build
+/public/hot
+/public/storage
+
+##################################
+# Laravel Storage
+##################################
+/storage/*.key
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/storage/app/public/*
+!/storage/app/public/.gitignore
+
+##################################
+# Database
+##################################
+/database/*.sqlite
+/database/*.sqlite-journal
+*.sql
+*.dump
+
+##################################
+# Testing (PHPUnit / Pest)
+##################################
+.phpunit.result.cache
+.phpunit.cache/
+/coverage
+.pest/
+
+##################################
+# IDE / Editor
+##################################
+.idea
+.vscode
+*.swp
+*.swo
+
+##################################
+# OS
+##################################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+##################################
+# Security
+##################################
+*.pem
+*.key
+*.crt
+
+##################################
+# Docker (Local Data)
+##################################
+.docker/
+docker-data/
