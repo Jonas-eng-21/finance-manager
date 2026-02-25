@@ -5,6 +5,9 @@ namespace App\Domain\User;
 use App\Domain\User\ValueObjects\Email;
 use App\Domain\User\ValueObjects\Password;
 use App\Domain\User\Exceptions\InvalidBirthDateException;
+use App\Domain\User\Exceptions\InvalidUserNameException;
+use App\Domain\User\Exceptions\SamePasswordException;
+use App\Application\Exceptions\InvalidCurrentPasswordException;
 use DateTimeImmutable;
 
 class User
@@ -65,5 +68,38 @@ class User
         $user->birthDate = $birthDate;
 
         return $user;
+    }
+
+    public function updateName(string $newName): void
+    {
+        $newName = trim($newName);
+
+        if ($newName === '') {
+            throw new InvalidUserNameException();
+        }
+
+        if (strlen($newName) < 3 || strlen($newName) > 120) {
+            throw new InvalidUserNameException();
+        }
+
+        if ($newName === $this->name) {
+            return;
+        }
+
+        $this->name = $newName;
+    }
+
+
+    public function updatePassword(string $currentPassword, string $newPassword): void
+    {
+        if (!$this->verifyPassword($currentPassword)) {
+            throw new InvalidCurrentPasswordException();
+        }
+
+        if ($this->verifyPassword($newPassword)) {
+            throw new SamePasswordException();
+        }
+
+        $this->password = new Password($newPassword);
     }
 }
