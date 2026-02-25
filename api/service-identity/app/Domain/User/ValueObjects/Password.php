@@ -8,12 +8,16 @@ class Password
 {
     private string $hash;
 
-    public function __construct(string $password)
+    public function __construct(string $password, bool $isAlreadyHashed = false)
     {
-        if (strlen($password) < 8) {
-            throw new InvalidPasswordException();
+        if ($isAlreadyHashed) {
+            $this->hash = $password;
+        } else {
+            if (strlen($password) < 8) {
+                throw new InvalidPasswordException();
+            }
+            $this->hash = password_hash($password, PASSWORD_BCRYPT);
         }
-        $this->hash = password_hash($password, PASSWORD_BCRYPT);
     }
 
     public function verify(string $plainPassword): bool

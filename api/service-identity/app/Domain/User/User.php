@@ -54,4 +54,16 @@ class User
     {
         return $this->birthDate;
     }
+
+    public static function restore(string $name, string $email, string $passwordHash, DateTimeImmutable $birthDate): self
+    {
+        $user = (new \ReflectionClass(self::class))->newInstanceWithoutConstructor();
+
+        $user->name = $name;
+        $user->email = new Email($email);
+        $user->password = new Password($passwordHash, true);
+        $user->birthDate = $birthDate;
+
+        return $user;
+    }
 }
