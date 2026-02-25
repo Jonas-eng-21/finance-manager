@@ -8,6 +8,10 @@ use App\Application\Exceptions\EmailAlreadyExistsException;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Application\DTOs\User\UpdateUserDTO;
+use App\Application\UseCases\User\UpdateUserUseCase;
+use App\Application\Exceptions\InvalidCurrentPasswordException;
 
 class UserController extends Controller
 {
@@ -29,6 +33,31 @@ class UserController extends Controller
             return response()->json(['error' => __($e->getMessage())], 409);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
+
+    public function updateProfile(UpdateProfileRequest $request, UpdateUserUseCase $useCase)
+    {
+        $validated = $request->validated();
+
+        $email = auth('api')->user()->email;
+
+        $dto = new UpdateUserDTO(
+            email: $email,
+            name: $validated['name'] ?? null,
+            currentPassword: $validated['current_password'] ?? null,
+            newPassword: $validated['new_password'] ?? null
+        );
+
+        try {
+            $useCase->execute($dto);
+            return response()->json(['message' => 'Profile updated successfully'], 200);
+
+        } catch (InvalidCurrentPasswordException $e) {
+            return response()->json(['error' => __($e->getMessage())], 403);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }

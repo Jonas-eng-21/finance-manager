@@ -14,12 +14,15 @@ class EloquentUserRepository implements UserRepositoryInterface
 
     public function save(DomainUser $user): void
     {
-        UserModel::create([
-            'name' => $user->getName(),
-            'email' => (string) $user->getEmail(),
-            'password' => $user->getPasswordHash(),
-            'birth_date' => $user->getBirthDate()->format('Y-m-d'),
-        ]);
+
+        UserModel::updateOrCreate(
+            ['email' => $user->getEmail()],
+            [
+                'name' => $user->getName(),
+                'password' => $user->getPasswordHash(),
+                'birth_date' => $user->getBirthDate(),
+            ]
+        );
     }
 
     public function findByEmail(string $email): ?DomainUser

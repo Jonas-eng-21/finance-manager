@@ -16,4 +16,5 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/me', [UserController::class, 'updateProfile']);
 });
