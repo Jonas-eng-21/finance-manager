@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  identity-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.linux
+    container_name: finance-identity-app
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8002:8000"
+    networks:
+      - finance-identity-network
+    depends_on:
+      - identity-db
+
+  identity-db:
+    image: mysql:8.0
+    container_name: finance-identity-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: identity_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: secret
+      MYSQL_USER: identity_user
+    ports:
+      - "3307:3306"
+    volumes:
+      - identity-mysql-data:/var/lib/mysql
+    networks:
+      - finance-identity-network
+
+networks:
+  finance-identity-network:
+    driver: bridge
+
+volumes:
+  identity-mysql-data:
