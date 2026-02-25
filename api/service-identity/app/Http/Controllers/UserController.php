@@ -13,8 +13,6 @@ class UserController extends Controller
 {
     public function store(StoreUserRequest $request, CreateUserUseCase $useCase): JsonResponse
     {
-        // Em vez de acessar o array 'validated()' como array, vamos usar os métodos seguros do Request
-        // que extraem os dados da requisição, já que o FormRequest já fez o bloqueio (se configurado certo)
         $dto = new CreateUserDTO(
             name: $request->input('name'),
             email: $request->input('email'),
@@ -30,7 +28,6 @@ class UserController extends Controller
         } catch (EmailAlreadyExistsException $e) {
             return response()->json(['error' => __($e->getMessage())], 409);
         } catch (\Exception $e) {
-            // Em caso de erro inesperado
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
