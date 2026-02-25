@@ -9,4 +9,9 @@ return [
             'email_already_exists' => 'The provided email is already registered.',
         ],
     ],
+    'auth' => [
+        'errors' => [
+            'invalid_credentials' => 'Invalid email or password.',
+        ],
+    ],
 ];
