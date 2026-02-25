@@ -19,6 +19,7 @@ class CreateUserTest extends TestCase
             'birth_date' => '1990-01-01',
         ];
 
+
         $response = $this->postJson('/api/users', $payload);
 
         $response->assertStatus(201)
@@ -48,5 +49,19 @@ class CreateUserTest extends TestCase
             ->assertJsonFragment([
                 'error' => __('identity.user.errors.email_already_exists')
             ]);
+    }
+
+    public function test_it_should_return_422_if_validation_fails(): void
+    {
+        $payload = [
+            'name' => 'Jonas Sousa',
+            'email' => 'email-invalido',
+            'password' => '123',
+        ];
+
+        $response = $this->postJson('/api/users', $payload);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['email', 'password', 'birth_date']);
     }
 }
