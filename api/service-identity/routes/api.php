@@ -11,6 +11,9 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 });
