@@ -23,13 +23,18 @@ class AuthController extends Controller
         try {
             $token = $useCase->execute($dto);
 
-            return response()->json(['token' => $token], 200); // 200 OK para leitura/busca
+            return response()->json(['token' => $token], 200);
 
         } catch (InvalidCredentialsException $e) {
-            // Retorna 401 Unauthorized para credenciais inválidas
+
             return response()->json(['error' => __($e->getMessage())], 401);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
+    }
+
+    public function me(): JsonResponse
+    {
+        return response()->json(auth('api')->user(), 200);
     }
 }
