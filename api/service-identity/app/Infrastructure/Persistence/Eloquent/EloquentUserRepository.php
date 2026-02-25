@@ -21,4 +21,20 @@ class EloquentUserRepository implements UserRepositoryInterface
             'birth_date' => $user->getBirthDate()->format('Y-m-d'),
         ]);
     }
+
+    public function findByEmail(string $email): ?DomainUser
+    {
+        $model = UserModel::where('email', $email)->first();
+
+        if (!$model) {
+            return null;
+        }
+
+        return DomainUser::restore(
+            name: $model->name,
+            email: $model->email,
+            passwordHash: $model->password,
+            birthDate: new \DateTimeImmutable($model->birth_date)
+        );
+    }
 }
