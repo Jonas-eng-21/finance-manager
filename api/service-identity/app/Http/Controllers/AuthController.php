@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Application\DTOs\Auth\LoginDTO;
+use App\Application\Exceptions\InvalidRefreshTokenException;
 use App\Application\UseCases\Auth\LoginUseCase;
 use App\Application\Exceptions\InvalidCredentialsException;
+use App\Application\UseCases\Auth\LogoutUseCase;
+use App\Application\UseCases\Auth\RefreshTokenUseCase;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use App\Application\DTOs\Auth\GoogleAuthDTO;
@@ -16,23 +20,25 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request, LoginUseCase $useCase): JsonResponse
     {
-        $validated = $request->validated();
-
-        $dto = new LoginDTO(
-            email: $validated['email'],
-            password: $validated['password']
-        );
-
         try {
-            $token = $useCase->execute($dto);
+            $dto = new LoginDTO(
+                email: $request->validated('email'),
+                password: $request->validated('password')
+            );
 
-            return response()->json(['token' => $token], 200);
+            $authTokenDTO = $useCase->execute($dto);
+
+            return response()->json([
+                'access_token' => $authTokenDTO->accessToken,
+                'refresh_token' => $authTokenDTO->refreshToken,
+                'token_type' => 'Bearer',
+                'expires_in' => env('JWT_TTL', 15) * 60
+            ], 200);
 
         } catch (InvalidCredentialsException $e) {
-
-            return response()->json(['error' => __($e->getMessage())], 401);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Internal Server Error'], 500);
+            return response()->json([
+                'error' => __($e->getMessage())
+            ], 401);
         }
     }
 
@@ -64,5 +70,33 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Google Authentication Failed'], 401);
         }
+    }
+
+    public function refresh(Request $request, RefreshTokenUseCase $useCase): JsonResponse
+    {
+        $request->validate(['refresh_token' => 'required|string']);
+
+        try {
+            $authTokenDTO = $useCase->execute($request->input('refresh_token'));
+
+            return response()->json([
+                'access_token' => $authTokenDTO->accessToken,
+                'refresh_token' => $authTokenDTO->refreshToken,
+                'token_type' => 'Bearer',
+                'expires_in' => env('JWT_TTL', 15) * 60
+            ], 200);
+
+        } catch (InvalidRefreshTokenException $e) {
+            return response()->json(['error' => __($e->getMessage())], 401);
+        }
+    }
+
+    public function logout(Request $request, LogoutUseCase $useCase): JsonResponse
+    {
+        $userId = auth()->user()->id;
+
+        $useCase->execute($userId);
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
 }
