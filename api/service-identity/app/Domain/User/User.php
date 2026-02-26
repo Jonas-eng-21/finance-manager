@@ -19,12 +19,18 @@ class User
         private UserName $name,
         private Email $email,
         private Password $password,
-        private \DateTimeImmutable $birthDate
+        private \DateTimeImmutable $birthDate,
+        private ?int $id = null
     ) {
         $hoje = new \DateTimeImmutable();
         if ($birthDate > $hoje) {
             throw new InvalidBirthDateException();
         }
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getName(): string
@@ -62,13 +68,15 @@ class User
         string $name,
         string $email,
         string $password,
-        DateTimeImmutable $birthDate
+        DateTimeImmutable $birthDate,
+        int $id
     ): self {
         return new self(
             new UserName($name),
             new Email($email),
             new Password($password, true),
-            $birthDate
+            $birthDate,
+            $id
         );
     }
 
