@@ -8,13 +8,15 @@ use App\Domain\User\ValueObjects\UserName;
 use App\Application\Contracts\AuditLoggerInterface;
 use App\Domain\Audit\Enums\AuditAction;
 use App\Domain\User\Exceptions\InvalidCurrentPasswordException;
+use App\Domain\Auth\RefreshTokenRepositoryInterface;
 use Exception;
 
 class UpdateUserUseCase
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
-        private readonly AuditLoggerInterface $auditLogger
+        private readonly AuditLoggerInterface $auditLogger,
+        private readonly RefreshTokenRepositoryInterface $refreshTokenRepository
     ) {}
 
     public function execute(UpdateUserDTO $dto): void
@@ -37,6 +39,7 @@ class UpdateUserUseCase
         if ($dto->newPassword !== null) {
             try {
                 $user->updatePassword($dto->currentPassword, $dto->newPassword);
+                $this->refreshTokenRepository->revokeAllForUser($user->getId());
                 $this->auditLogger->log(AuditAction::PASSWORD_CHANGED, $user->getId());
             } catch (InvalidCurrentPasswordException $e) {
                 throw new Exception('identity.user.errors.invalid_current_password');
