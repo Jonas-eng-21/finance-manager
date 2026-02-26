@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use App\Application\UseCases\User\UpdateUserUseCase;
 use App\Application\DTOs\User\UpdateUserDTO;
 use App\Domain\User\UserRepositoryInterface;
+use App\Domain\Auth\RefreshTokenRepositoryInterface;
 use App\Domain\User\User;
 use DateTimeImmutable;
 use Exception;
@@ -40,6 +41,7 @@ class UpdateUserUseCaseTest extends TestCase
     {
         $userRepositoryMock = Mockery::mock(UserRepositoryInterface::class);
         $auditLoggerMock = Mockery::mock(AuditLoggerInterface::class);
+        $refreshTokenRepoMock = Mockery::mock(RefreshTokenRepositoryInterface::class);
 
         $dummyUser = $this->createDummyUser();
 
@@ -54,7 +56,9 @@ class UpdateUserUseCaseTest extends TestCase
             ->once()
             ->with(AuditAction::PROFILE_UPDATED, 1);
 
-        $useCase = new UpdateUserUseCase($userRepositoryMock, $auditLoggerMock);
+        $refreshTokenRepoMock->shouldReceive('revokeAllForUser')->never();
+
+        $useCase = new UpdateUserUseCase($userRepositoryMock, $auditLoggerMock, $refreshTokenRepoMock);
 
         $dto = new UpdateUserDTO(
             email: 'jonas@example.com',
@@ -72,6 +76,7 @@ class UpdateUserUseCaseTest extends TestCase
     {
         $userRepositoryMock = Mockery::mock(UserRepositoryInterface::class);
         $auditLoggerMock = Mockery::mock(AuditLoggerInterface::class);
+        $refreshTokenRepoMock = Mockery::mock(RefreshTokenRepositoryInterface::class);
 
         $dummyUser = $this->createDummyUser();
 
@@ -86,7 +91,9 @@ class UpdateUserUseCaseTest extends TestCase
             ->once()
             ->with(AuditAction::PASSWORD_CHANGED, 1);
 
-        $useCase = new UpdateUserUseCase($userRepositoryMock, $auditLoggerMock);
+        $refreshTokenRepoMock->shouldReceive('revokeAllForUser')->once()->with(1);
+
+        $useCase = new UpdateUserUseCase($userRepositoryMock, $auditLoggerMock, $refreshTokenRepoMock);
 
         $dto = new UpdateUserDTO(
             email: 'jonas@example.com',
@@ -103,6 +110,7 @@ class UpdateUserUseCaseTest extends TestCase
     {
         $userRepositoryMock = Mockery::mock(UserRepositoryInterface::class);
         $auditLoggerMock = Mockery::mock(AuditLoggerInterface::class);
+        $refreshTokenRepoMock = Mockery::mock(RefreshTokenRepositoryInterface::class);
 
         $dummyUser = $this->createDummyUser();
 
@@ -115,7 +123,9 @@ class UpdateUserUseCaseTest extends TestCase
 
         $auditLoggerMock->shouldReceive('log')->never();
 
-        $useCase = new UpdateUserUseCase($userRepositoryMock, $auditLoggerMock);
+        $refreshTokenRepoMock->shouldReceive('revokeAllForUser')->never();
+
+        $useCase = new UpdateUserUseCase($userRepositoryMock, $auditLoggerMock, $refreshTokenRepoMock);
 
         $dto = new UpdateUserDTO(
             email: 'jonas@example.com',
