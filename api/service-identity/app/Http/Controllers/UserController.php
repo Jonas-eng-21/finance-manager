@@ -52,12 +52,12 @@ class UserController extends Controller
 
         try {
             $useCase->execute($dto);
-            return response()->json(['message' => 'Profile updated successfully'], 200);
-
-        } catch (InvalidCurrentPasswordException $e) {
-            return response()->json(['error' => __($e->getMessage())], 403);
-
+            return response()->json(['message' => 'Profile updated successfully']);
         } catch (\Exception $e) {
+            if ($e->getMessage() === 'identity.user.errors.invalid_current_password') {
+                return response()->json(['error' => __($e->getMessage())], 403);
+            }
+
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
