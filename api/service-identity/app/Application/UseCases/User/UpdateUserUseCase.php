@@ -4,6 +4,7 @@ namespace App\Application\UseCases\User;
 
 use App\Application\DTOs\User\UpdateUserDTO;
 use App\Domain\User\UserRepositoryInterface;
+use App\Domain\User\ValueObjects\UserName;
 use Exception;
 
 class UpdateUserUseCase
@@ -21,7 +22,7 @@ class UpdateUserUseCase
         }
 
         if ($dto->name !== null) {
-            $user->updateName($dto->name);
+            $user->updateName(new UserName($dto->name));
         }
 
         if ($dto->newPassword !== null) {

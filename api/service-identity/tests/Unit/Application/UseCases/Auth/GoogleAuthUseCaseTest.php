@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Application\UseCases\Auth;
 
+use App\Domain\User\ValueObjects\Email;
+use App\Domain\User\ValueObjects\Password;
+use App\Domain\User\ValueObjects\UserName;
 use PHPUnit\Framework\TestCase;
 use App\Application\UseCases\Auth\GoogleAuthUseCase;
 use App\Application\DTOs\Auth\GoogleAuthDTO;
@@ -24,7 +27,12 @@ class GoogleAuthUseCaseTest extends TestCase
         $repositoryMock = Mockery::mock(UserRepositoryInterface::class);
         $jwtMock = Mockery::mock(JwtServiceInterface::class);
 
-        $dummyUser = new User('Jonas Sousa', 'jonas@example.com', 'Pass1234!', new DateTimeImmutable('1990-01-01'));
+        $dummyUser = new User(
+            new UserName('Jonas Sousa'),
+            new Email('jonas@example.com'),
+            new Password('Pass1234!'),
+            new DateTimeImmutable('1990-01-01')
+        );
 
         $repositoryMock->shouldReceive('findByEmail')
             ->once()
