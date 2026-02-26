@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Application\DTOs\User\CreateUserDTO;
 use App\Application\UseCases\User\CreateUserUseCase;
 use App\Application\Exceptions\EmailAlreadyExistsException;
+use App\Domain\User\Exceptions\InvalidCurrentPasswordException;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Application\DTOs\User\UpdateUserDTO;
 use App\Application\UseCases\User\UpdateUserUseCase;
-use App\Application\Exceptions\InvalidCurrentPasswordException;
 use App\Application\UseCases\User\DeleteUserUseCase;
 
 class UserController extends Controller
