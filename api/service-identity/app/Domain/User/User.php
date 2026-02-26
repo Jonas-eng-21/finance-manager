@@ -2,40 +2,34 @@
 
 namespace App\Domain\User;
 
+use App\Domain\User\Exceptions\InvalidCurrentPasswordException;
+use App\Domain\User\Exceptions\InvalidEmailException;
+use App\Domain\User\Exceptions\InvalidPasswordException;
 use App\Domain\User\ValueObjects\Email;
 use App\Domain\User\ValueObjects\Password;
 use App\Domain\User\Exceptions\InvalidBirthDateException;
 use App\Domain\User\Exceptions\InvalidUserNameException;
 use App\Domain\User\Exceptions\SamePasswordException;
-use App\Application\Exceptions\InvalidCurrentPasswordException;
+use App\Domain\User\ValueObjects\UserName;
 use DateTimeImmutable;
 
 class User
 {
-    private string $name;
-    private Email $email;
-    private Password $password;
-    private DateTimeImmutable $birthDate;
-
     public function __construct(
-        string $name,
-        string $email,
-        string $password,
-        DateTimeImmutable $birthDate
+        private UserName $name,
+        private Email $email,
+        private Password $password,
+        private \DateTimeImmutable $birthDate
     ) {
-        if ($birthDate > new DateTimeImmutable()) {
+        $hoje = new \DateTimeImmutable();
+        if ($birthDate > $hoje) {
             throw new InvalidBirthDateException();
         }
-
-        $this->name = $name;
-        $this->email = new Email($email);
-        $this->password = new Password($password);
-        $this->birthDate = $birthDate;
     }
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->name->getValue();
     }
 
     public function getEmail(): Email
@@ -58,37 +52,34 @@ class User
         return $this->birthDate;
     }
 
-    public static function restore(string $name, string $email, string $passwordHash, DateTimeImmutable $birthDate): self
-    {
-        $user = (new \ReflectionClass(self::class))->newInstanceWithoutConstructor();
-
-        $user->name = $name;
-        $user->email = new Email($email);
-        $user->password = new Password($passwordHash, true);
-        $user->birthDate = $birthDate;
-
-        return $user;
+    /**
+     * @throws InvalidUserNameException
+     * @throws InvalidEmailException
+     * @throws InvalidPasswordException
+     * @throws InvalidBirthDateException
+     */
+    public static function restore(
+        string $name,
+        string $email,
+        string $password,
+        DateTimeImmutable $birthDate
+    ): self {
+        return new self(
+            new UserName($name),
+            new Email($email),
+            new Password($password, true),
+            $birthDate
+        );
     }
 
-    public function updateName(string $newName): void
+    public function updateName(UserName $newName): void
     {
-        $newName = trim($newName);
-
-        if ($newName === '') {
-            throw new InvalidUserNameException();
-        }
-
-        if (strlen($newName) < 3 || strlen($newName) > 120) {
-            throw new InvalidUserNameException();
-        }
-
-        if ($newName === $this->name) {
+        if ($newName->getValue() === $this->name->getValue()) {
             return;
         }
 
         $this->name = $newName;
     }
-
 
     public function updatePassword(string $currentPassword, string $newPassword): void
     {

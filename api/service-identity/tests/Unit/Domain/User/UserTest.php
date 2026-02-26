@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Domain\User;
 
+use App\Domain\User\ValueObjects\Email;
+use App\Domain\User\ValueObjects\Password;
+use App\Domain\User\ValueObjects\UserName;
 use PHPUnit\Framework\TestCase;
 use App\Domain\User\User;
 use App\Domain\User\Exceptions\InvalidPasswordException;
@@ -13,10 +16,10 @@ class UserTest extends TestCase
     public function test_it_should_create_user_with_valid_data(): void
     {
         $user = new User(
-            name: 'Jonas Sousa',
-            email: 'jonas@example.com',
-            password: 'StrongPassword123!',
-            birthDate: new DateTimeImmutable('1990-01-01')
+            new UserName ('Jonas Sousa'),
+            new Email ('jonas@example.com'),
+            new Password ('StrongPassword123!'),
+            new DateTimeImmutable('1990-01-01')
         );
 
         $this->assertEquals('Jonas Sousa', $user->getName());
@@ -31,10 +34,10 @@ class UserTest extends TestCase
         $this->expectExceptionMessage('identity.user.errors.invalid_password');
 
         new User(
-            name: 'Jonas Sousa',
-            email: 'jonas@example.com',
-            password: '123',
-            birthDate: new DateTimeImmutable('1990-01-01')
+            new UserName('Jonas Sousa'),
+            new Email('jonas@example.com'),
+            new Password('123') ,
+            new DateTimeImmutable('1990-01-01')
         );
     }
 
@@ -43,10 +46,10 @@ class UserTest extends TestCase
         $this->expectException(InvalidBirthDateException::class);
 
         new User(
-            name: 'Jonas Sousa',
-            email: 'jonas@example.com',
-            password: 'StrongPassword123!',
-            birthDate: new DateTimeImmutable('+1 day')
+            new UserName ('Jonas Sousa'),
+            new Email ('jonas@example.com'),
+            new Password ('StrongPassword123!'),
+            new DateTimeImmutable('+1 day')
         );
     }
 }

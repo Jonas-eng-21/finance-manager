@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Application\UseCases\User;
 
+use App\Domain\User\ValueObjects\Email;
+use App\Domain\User\ValueObjects\Password;
+use App\Domain\User\ValueObjects\UserName;
 use PHPUnit\Framework\TestCase;
 use App\Application\UseCases\User\DeleteUserUseCase;
 use App\Domain\User\UserRepositoryInterface;
@@ -26,10 +29,10 @@ class DeleteUserUseCaseTest extends TestCase
         $dispatcherMock = Mockery::mock(EventDispatcherInterface::class);
 
         $dummyUser = new User(
-            name: 'Jonas Sousa',
-            email: 'jonas@example.com',
-            password: 'StrongPassword123!',
-            birthDate: new DateTimeImmutable('1990-01-01')
+            new UserName ('Jonas Sousa'),
+            new Email ('jonas@example.com'),
+            new Password ('StrongPassword123!'),
+            new DateTimeImmutable('1990-01-01')
         );
 
         $repositoryMock->shouldReceive('findByEmail')

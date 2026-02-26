@@ -36,7 +36,7 @@ class EloquentUserRepository implements UserRepositoryInterface
         return DomainUser::restore(
             name: $model->name,
             email: $model->email,
-            passwordHash: $model->password,
+            password: $model->password,
             birthDate: new \DateTimeImmutable($model->birth_date)
         );
     }
