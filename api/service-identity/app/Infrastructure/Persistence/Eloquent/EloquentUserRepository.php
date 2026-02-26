@@ -37,12 +37,30 @@ class EloquentUserRepository implements UserRepositoryInterface
             name: $model->name,
             email: $model->email,
             password: $model->password,
-            birthDate: new \DateTimeImmutable($model->birth_date)
+            birthDate: new \DateTimeImmutable($model->birth_date),
+            id: $model->id
         );
     }
 
     public function delete(string $email): void
     {
         UserModel::where('email', $email)->delete();
+    }
+
+    public function findById(int $id): ?DomainUser
+    {
+        $model = UserModel::find($id);
+
+        if (!$model) {
+            return null;
+        }
+
+        return DomainUser::restore(
+            name: $model->name,
+            email: $model->email,
+            password: $model->password,
+            birthDate: new \DateTimeImmutable($model->birth_date),
+            id: $model->id
+        );
     }
 }
