@@ -9,27 +9,27 @@ use App\Application\Contracts\JwtServiceInterface;
 use App\Infrastructure\Services\JwtAuthService;
 use App\Application\Contracts\EventDispatcherInterface;
 use App\Infrastructure\Events\LaravelEventDispatcher;
+use App\Domain\Auth\RefreshTokenRepositoryInterface;
+use App\Infrastructure\Persistence\Eloquent\EloquentRefreshTokenRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
+    public array $bindings = [
+        UserRepositoryInterface::class => EloquentUserRepository::class,
+        JwtServiceInterface::class => JwtAuthService::class,
+        EventDispatcherInterface::class => LaravelEventDispatcher::class,
+        RefreshTokenRepositoryInterface::class => EloquentRefreshTokenRepository::class,
+    ];
+
     public function register(): void
     {
-        $this->app->bind(UserRepositoryInterface::class, EloquentUserRepository::class);
-        $this->app->bind(JwtServiceInterface::class, JwtAuthService::class);
-        $this->app->bind(
-            EventDispatcherInterface::class,
-            LaravelEventDispatcher::class
-        );
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+
     }
 }
