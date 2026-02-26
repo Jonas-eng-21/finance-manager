@@ -11,6 +11,10 @@ use App\Application\Contracts\EventDispatcherInterface;
 use App\Infrastructure\Events\LaravelEventDispatcher;
 use App\Domain\Auth\RefreshTokenRepositoryInterface;
 use App\Infrastructure\Persistence\Eloquent\EloquentRefreshTokenRepository;
+use App\Domain\Audit\AuditLogRepositoryInterface;
+use App\Infrastructure\Persistence\Eloquent\EloquentAuditLogRepository;
+use App\Application\Contracts\AuditLoggerInterface;
+use App\Infrastructure\Logging\DatabaseAuditLogger;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
         JwtServiceInterface::class => JwtAuthService::class,
         EventDispatcherInterface::class => LaravelEventDispatcher::class,
         RefreshTokenRepositoryInterface::class => EloquentRefreshTokenRepository::class,
+        AuditLogRepositoryInterface::class => EloquentAuditLogRepository::class,
+        AuditLoggerInterface::class => DatabaseAuditLogger::class,
     ];
 
     public function register(): void
