@@ -76,4 +76,20 @@ class LoginTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
     }
+
+    public function test_it_should_rate_limit_multiple_failed_login_attempts(): void
+    {
+        $payload = [
+            'email' => 'hacker@example.com',
+            'password' => 'wrongpassword'
+        ];
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson('/api/login', $payload);
+        }
+
+        $response = $this->postJson('/api/login', $payload);
+
+        $response->assertStatus(429);
+    }
 }
