@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Application\DTOs\User\UpdateUserDTO;
 use App\Application\UseCases\User\UpdateUserUseCase;
 use App\Application\Exceptions\InvalidCurrentPasswordException;
+use App\Application\UseCases\User\DeleteUserUseCase;
 
 class UserController extends Controller
 {
@@ -55,6 +56,20 @@ class UserController extends Controller
 
         } catch (InvalidCurrentPasswordException $e) {
             return response()->json(['error' => __($e->getMessage())], 403);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function deleteProfile(DeleteUserUseCase $useCase)
+    {
+        try {
+            $email = auth('api')->user()->email;
+
+            $useCase->execute($email);
+
+            return response()->json(['message' => 'User deleted successfully'], 200);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);

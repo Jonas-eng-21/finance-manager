@@ -40,4 +40,9 @@ class EloquentUserRepository implements UserRepositoryInterface
             birthDate: new \DateTimeImmutable($model->birth_date)
         );
     }
+
+    public function delete(string $email): void
+    {
+        UserModel::where('email', $email)->delete();
+    }
 }
