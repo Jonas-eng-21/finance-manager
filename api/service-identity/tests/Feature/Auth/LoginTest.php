@@ -32,7 +32,12 @@ class LoginTest extends TestCase
         $response = $this->postJson('/api/login', $payload);
 
         $response->assertStatus(200)
-            ->assertJsonStructure(['token']);
+            ->assertJsonStructure([
+                'access_token',
+                'refresh_token',
+                'token_type',
+                'expires_in'
+            ]);
     }
 
     public function test_it_should_return_401_with_invalid_email(): void
