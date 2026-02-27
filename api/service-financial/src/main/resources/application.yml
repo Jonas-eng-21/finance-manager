@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: financial
+
+  flyway:
+    enabled: false

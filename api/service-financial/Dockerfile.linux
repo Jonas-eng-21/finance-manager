@@ -1,0 +1,9 @@
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y bash curl && rm -rf /var/lib/apt/lists/*
+
+RUN echo 'alias run="chmod +x mvnw && ./mvnw spring-boot:run"' >> ~/.bashrc
+
+CMD ["tail", "-f", "/dev/null"]
