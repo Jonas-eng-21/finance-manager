@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  financial-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.linux
+    container_name: finance-financial-app
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./:/app
+    ports:
+      - "8003:${APP_PORT:-8080}"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    networks:
+      - finance-financial-network
+    depends_on:
+      - financial-db
+
+  financial-db:
+    image: mysql:8.0
+    container_name: finance-financial-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    ports:
+      - "3308:3306"
+    volumes:
+      - financial-mysql-data:/var/lib/mysql
+    networks:
+      - finance-financial-network
+
+networks:
+  finance-financial-network:
+    driver: bridge
+
+volumes:
+  financial-mysql-data:
