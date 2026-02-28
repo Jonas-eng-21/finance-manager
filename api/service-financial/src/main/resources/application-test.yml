@@ -11,5 +11,9 @@ spring:
       ddl-auto: create-drop
     show-sql: true
 
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
   flyway:
     enabled: false
