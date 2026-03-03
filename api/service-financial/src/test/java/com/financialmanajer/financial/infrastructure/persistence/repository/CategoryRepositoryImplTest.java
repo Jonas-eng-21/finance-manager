@@ -9,6 +9,8 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -49,5 +51,25 @@ class CategoryRepositoryImplTest {
         assertTrue(categoryRepository.existsByUserIdAndNameIgnoreCase(2L, "INVESTIMENTOS"));
         assertFalse(categoryRepository.existsByUserIdAndNameIgnoreCase(1L, "Investimentos"));
         assertFalse(categoryRepository.existsByUserIdAndNameIgnoreCase(2L, "Lazer"));
+    }
+
+    @Test
+    @DisplayName("Deve listar apenas as categorias do usuário específico")
+    void should_list_only_user_categories() {
+        Long user1 = 1L;
+        Long user2 = 2L;
+
+        CategoryEntity c1 = new CategoryEntity();
+        c1.setUserId(user1); c1.setName("User 1 Cat"); c1.setCreatedAt(java.time.LocalDateTime.now());
+
+        CategoryEntity c2 = new CategoryEntity();
+        c2.setUserId(user2); c2.setName("User 2 Cat"); c2.setCreatedAt(java.time.LocalDateTime.now());
+
+        springDataRepository.saveAll(List.of(c1, c2));
+
+        List<Category> result = categoryRepository.findAllByUserId(user1);
+
+        assertEquals(1, result.size());
+        assertEquals("User 1 Cat", result.get(0).getName());
     }
 }

@@ -5,6 +5,8 @@ import com.financialmanajer.financial.domain.repository.CategoryRepository;
 import com.financialmanajer.financial.infrastructure.persistence.entity.CategoryEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class CategoryRepositoryImpl implements CategoryRepository {
 
@@ -30,5 +32,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
         category.setId(savedEntity.getId());
         return category;
+    }
+
+    @Override
+    public List<Category> findAllByUserId(Long userId) {
+        return springDataRepository.findAllByUserIdOrderByNameAsc(userId)
+                .stream()
+                .map(entity -> {
+                    Category domain = new Category(entity.getUserId(), entity.getName());
+                    domain.setId(entity.getId());
+                    return domain;
+                }).toList();
     }
 }
