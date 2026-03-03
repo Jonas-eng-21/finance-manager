@@ -8,6 +8,7 @@ public class Category {
     private Long userId;
     private String name;
     private LocalDateTime createdAt;
+    private java.time.LocalDateTime deletedAt;
 
     public Category(Long userId, String name) {
         validateUserId(userId);
@@ -45,6 +46,22 @@ public class Category {
 
         validateName(normalizedName);
         this.name = normalizedName;
+    }
+
+    public void delete() {
+        this.deletedAt = java.time.LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public java.time.LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void loadDeletedAt(java.time.LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() { return id; }
