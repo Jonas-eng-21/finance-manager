@@ -3,6 +3,7 @@ package com.financialmanajer.financial.presentation.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.financialmanajer.financial.application.dto.CreateCategoryDTO;
 import com.financialmanajer.financial.application.usecase.CreateCategoryUseCase;
+import com.financialmanajer.financial.application.usecase.ListCategoriesUseCase;
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.domain.model.Category;
 import com.financialmanajer.financial.presentation.dto.CreateCategoryRequest;
@@ -16,8 +17,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,6 +33,9 @@ class CategoryControllerTest {
     private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @MockitoBean
+    private ListCategoriesUseCase listCategoriesUseCase;
 
     @MockitoBean
     private CreateCategoryUseCase createCategoryUseCase;
@@ -78,7 +85,21 @@ class CategoryControllerTest {
                         .header("X-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict()) // Esperamos 409!
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    @DisplayName("Deve retornar 200 OK e a lista de categorias")
+    void should_return_200_and_list_when_listing() throws Exception {
+        Long userId = 1L;
+        when(listCategoriesUseCase.execute(userId)).thenReturn(List.of(
+                new Category(userId, "Alimentação")
+        ));
+
+        mockMvc.perform(get("/api/categories")
+                        .header("X-User-Id", userId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Alimentação"));
     }
 }
