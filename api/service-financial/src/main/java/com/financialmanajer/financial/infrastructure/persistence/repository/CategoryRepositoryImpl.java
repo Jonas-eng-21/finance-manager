@@ -6,6 +6,7 @@ import com.financialmanajer.financial.infrastructure.persistence.entity.Category
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CategoryRepositoryImpl implements CategoryRepository {
@@ -43,5 +44,15 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                     domain.setId(entity.getId());
                     return domain;
                 }).toList();
+    }
+
+    @Override
+    public Optional<Category> findById(Long id) {
+        return springDataRepository.findById(id)
+                .map(entity -> {
+                    Category domain = new Category(entity.getUserId(), entity.getName());
+                    domain.setId(entity.getId());
+                    return domain;
+                });
     }
 }
