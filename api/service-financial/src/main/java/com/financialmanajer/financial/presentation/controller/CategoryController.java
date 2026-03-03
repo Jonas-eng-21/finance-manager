@@ -1,8 +1,10 @@
 package com.financialmanajer.financial.presentation.controller;
 
 import com.financialmanajer.financial.application.dto.CreateCategoryDTO;
+import com.financialmanajer.financial.application.dto.UpdateCategoryDTO;
 import com.financialmanajer.financial.application.usecase.CreateCategoryUseCase;
 import com.financialmanajer.financial.application.usecase.ListCategoriesUseCase;
+import com.financialmanajer.financial.application.usecase.UpdateCategoryUseCase;
 import com.financialmanajer.financial.domain.model.Category;
 import com.financialmanajer.financial.presentation.dto.CategoryResponse;
 import com.financialmanajer.financial.presentation.dto.CreateCategoryRequest;
@@ -19,10 +21,15 @@ public class CategoryController {
 
     private final CreateCategoryUseCase createCategoryUseCase;
     private final ListCategoriesUseCase listCategoriesUseCase;
+    private final UpdateCategoryUseCase updateCategoryUseCase;
 
-    public CategoryController(CreateCategoryUseCase createCategoryUseCase, ListCategoriesUseCase listCategoriesUseCase) {
+    public CategoryController(
+            CreateCategoryUseCase createCategoryUseCase,
+            ListCategoriesUseCase listCategoriesUseCase,
+            UpdateCategoryUseCase updateCategoryUseCase) {
         this.createCategoryUseCase = createCategoryUseCase;
         this.listCategoriesUseCase = listCategoriesUseCase;
+        this.updateCategoryUseCase = updateCategoryUseCase;
     }
 
     @PostMapping
@@ -47,5 +54,16 @@ public class CategoryController {
                 .toList();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCategory(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody CreateCategoryRequest request) {
+
+        updateCategoryUseCase.execute(new UpdateCategoryDTO(id, userId, request.name()));
+
+        return ResponseEntity.noContent().build();
     }
 }

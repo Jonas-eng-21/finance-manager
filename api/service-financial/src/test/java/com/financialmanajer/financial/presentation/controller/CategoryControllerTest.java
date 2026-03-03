@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.financialmanajer.financial.application.dto.CreateCategoryDTO;
 import com.financialmanajer.financial.application.usecase.CreateCategoryUseCase;
 import com.financialmanajer.financial.application.usecase.ListCategoriesUseCase;
+import com.financialmanajer.financial.application.usecase.UpdateCategoryUseCase;
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.domain.model.Category;
 import com.financialmanajer.financial.presentation.dto.CreateCategoryRequest;
+import com.financialmanajer.financial.presentation.dto.UpdateCategoryRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = CategoryController.class)
@@ -39,6 +40,9 @@ class CategoryControllerTest {
 
     @MockitoBean
     private CreateCategoryUseCase createCategoryUseCase;
+
+    @MockitoBean
+    private UpdateCategoryUseCase updateCategoryUseCase;
 
     @Test
     @DisplayName("Deve retornar 201 Created e a categoria quando a requisição for válida")
@@ -101,5 +105,18 @@ class CategoryControllerTest {
                         .header("X-User-Id", userId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Alimentação"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 204 No Content ao editar categoria válida")
+    void should_return_204_when_update_is_valid() throws Exception {
+        UpdateCategoryRequest request = new UpdateCategoryRequest("Nome Editado");
+
+        mockMvc.perform(put("/api/categories/100")
+                        .with(csrf())
+                        .header("X-User-Id", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent());
     }
 }
