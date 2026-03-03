@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SpringDataCategoryRepository extends JpaRepository<CategoryEntity, Long> {
 
-    boolean existsByUserIdAndNameIgnoreCase(Long userId, String name);
+    boolean existsByUserIdAndNameIgnoreCaseAndDeletedAtIsNull(Long userId, String name);
 
-    List<CategoryEntity> findAllByUserIdOrderByNameAsc(Long userId);
+    List<CategoryEntity> findAllByUserIdAndDeletedAtIsNullOrderByNameAsc(Long userId);
 }

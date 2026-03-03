@@ -72,4 +72,30 @@ class CategoryRepositoryImplTest {
         assertEquals(1, result.size());
         assertEquals("User 1 Cat", result.get(0).getName());
     }
+
+    @Test
+    @DisplayName("Não deve listar categorias deletadas e deve ignorá-las na verificação de existência")
+    void should_ignore_soft_deleted_categories() {
+        Long userId = 1L;
+
+        CategoryEntity active = new CategoryEntity();
+        active.setUserId(userId); active.setName("Ativa"); active.setCreatedAt(java.time.LocalDateTime.now());
+
+        CategoryEntity deleted = new CategoryEntity();
+        deleted.setUserId(userId); deleted.setName("Deletada"); deleted.setCreatedAt(java.time.LocalDateTime.now());
+        deleted.setDeletedAt(java.time.LocalDateTime.now());
+
+        springDataRepository.saveAll(List.of(active, deleted));
+
+        List<Category> list = categoryRepository.findAllByUserId(userId);
+
+        boolean existsActive = categoryRepository.existsByUserIdAndNameIgnoreCase(userId, "Ativa");
+        boolean existsDeleted = categoryRepository.existsByUserIdAndNameIgnoreCase(userId, "Deletada");
+
+        assertEquals(1, list.size(), "Deve trazer apenas 1 categoria (a ativa)");
+        assertEquals("Ativa", list.get(0).getName());
+
+        assertTrue(existsActive, "Deve encontrar a categoria ativa");
+        assertFalse(existsDeleted, "A categoria deletada deve ser dada como inexistente para nova criação");
+    }
 }
