@@ -36,6 +36,11 @@ public class Category {
         }
     }
 
+    public void updateName(String newName) {
+        validateName(newName);
+        this.name = newName;
+    }
+
     public Long getId() { return id; }
     public Long getUserId() { return userId; }
     public String getName() { return name; }
