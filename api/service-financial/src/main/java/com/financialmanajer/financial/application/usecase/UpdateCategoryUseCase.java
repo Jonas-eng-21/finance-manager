@@ -23,8 +23,8 @@ public class UpdateCategoryUseCase {
             throw new DomainValidationException("category.validation.access_denied");
         }
 
-        if (!category.getName().equalsIgnoreCase(dto.name())) {
-            if (categoryRepository.existsByUserIdAndNameIgnoreCase(dto.userId(), dto.name())) {
+        if (!category.getName().equalsIgnoreCase(dto.name().trim())) {
+            if (categoryRepository.existsByUserIdAndNameIgnoreCase(dto.userId(), dto.name().trim())) {
                 throw new DomainValidationException("category.validation.name.already_exists");
             }
         }

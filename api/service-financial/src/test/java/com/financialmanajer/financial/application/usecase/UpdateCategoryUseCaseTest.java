@@ -57,4 +57,23 @@ class UpdateCategoryUseCaseTest {
 
         assertThrows(DomainValidationException.class, () -> updateCategoryUseCase.execute(dto));
     }
+
+    @Test
+    @DisplayName("Deve permitir atualizar se o nome for exatamente igual ao atual (idempotência)")
+    void should_allow_update_when_name_is_same_as_current() {
+        Long userId = 1L;
+        Long catId = 100L;
+        Category category = new Category(userId, "Saúde");
+        category.setId(catId);
+
+        UpdateCategoryDTO dto = new UpdateCategoryDTO(catId, userId, "  Saúde  ");
+
+        when(categoryRepository.findById(catId)).thenReturn(java.util.Optional.of(category));
+
+        updateCategoryUseCase.execute(dto);
+
+        assertEquals("Saúde", category.getName());
+        verify(categoryRepository, times(1)).save(category);
+    }
+
 }
