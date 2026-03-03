@@ -3,6 +3,7 @@ package com.financialmanajer.financial.presentation.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.financialmanajer.financial.application.dto.CreateCategoryDTO;
 import com.financialmanajer.financial.application.usecase.CreateCategoryUseCase;
+import com.financialmanajer.financial.application.usecase.DeleteCategoryUseCase;
 import com.financialmanajer.financial.application.usecase.ListCategoriesUseCase;
 import com.financialmanajer.financial.application.usecase.UpdateCategoryUseCase;
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
@@ -43,6 +44,9 @@ class CategoryControllerTest {
 
     @MockitoBean
     private UpdateCategoryUseCase updateCategoryUseCase;
+
+    @MockitoBean
+    private DeleteCategoryUseCase deleteCategoryUseCase;
 
     @Test
     @DisplayName("Deve retornar 201 Created e a categoria quando a requisição for válida")
@@ -117,6 +121,15 @@ class CategoryControllerTest {
                         .header("X-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Deve retornar 204 No Content ao excluir categoria com sucesso")
+    void should_return_204_when_delete_is_successful() throws Exception {
+        mockMvc.perform(delete("/api/categories/100")
+                        .with(csrf())
+                        .header("X-User-Id", "1"))
                 .andExpect(status().isNoContent());
     }
 }

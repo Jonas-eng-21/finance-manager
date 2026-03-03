@@ -3,6 +3,7 @@ package com.financialmanajer.financial.presentation.controller;
 import com.financialmanajer.financial.application.dto.CreateCategoryDTO;
 import com.financialmanajer.financial.application.dto.UpdateCategoryDTO;
 import com.financialmanajer.financial.application.usecase.CreateCategoryUseCase;
+import com.financialmanajer.financial.application.usecase.DeleteCategoryUseCase;
 import com.financialmanajer.financial.application.usecase.ListCategoriesUseCase;
 import com.financialmanajer.financial.application.usecase.UpdateCategoryUseCase;
 import com.financialmanajer.financial.domain.model.Category;
@@ -22,14 +23,17 @@ public class CategoryController {
     private final CreateCategoryUseCase createCategoryUseCase;
     private final ListCategoriesUseCase listCategoriesUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
+    private final DeleteCategoryUseCase deleteCategoryUseCase;
 
     public CategoryController(
             CreateCategoryUseCase createCategoryUseCase,
             ListCategoriesUseCase listCategoriesUseCase,
-            UpdateCategoryUseCase updateCategoryUseCase) {
+            UpdateCategoryUseCase updateCategoryUseCase,
+            DeleteCategoryUseCase deleteCategoryUseCase) {
         this.createCategoryUseCase = createCategoryUseCase;
         this.listCategoriesUseCase = listCategoriesUseCase;
         this.updateCategoryUseCase = updateCategoryUseCase;
+        this.deleteCategoryUseCase = deleteCategoryUseCase;
     }
 
     @PostMapping
@@ -63,6 +67,16 @@ public class CategoryController {
             @Valid @RequestBody CreateCategoryRequest request) {
 
         updateCategoryUseCase.execute(new UpdateCategoryDTO(id, userId, request.name()));
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long userId) {
+
+        deleteCategoryUseCase.execute(id, userId);
 
         return ResponseEntity.noContent().build();
     }

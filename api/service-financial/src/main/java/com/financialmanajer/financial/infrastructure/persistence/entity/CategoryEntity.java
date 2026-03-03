@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categories", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "name"})
+        @UniqueConstraint(columnNames = {"user_id", "name", "deleted_at"})
 })
 public class CategoryEntity {
 
@@ -22,6 +22,9 @@ public class CategoryEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "deleted_at")
+    private java.time.LocalDateTime deletedAt;
+
     public CategoryEntity() {}
 
     public Long getId() { return id; }
@@ -32,4 +35,6 @@ public class CategoryEntity {
     public void setName(String name) { this.name = name; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public java.time.LocalDateTime getDeletedAt() { return deletedAt; }
+    public void setDeletedAt(java.time.LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
 }

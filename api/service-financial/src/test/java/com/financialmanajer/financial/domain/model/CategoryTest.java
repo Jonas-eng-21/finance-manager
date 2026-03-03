@@ -56,4 +56,18 @@ class CategoryTest {
         DomainValidationException ex = assertThrows(DomainValidationException.class, () -> new Category(null, "Moradia"));
         assertEquals("category.validation.user_id.required", ex.getMessage());
     }
+
+    @Test
+    @DisplayName("Deve marcar a categoria como deletada (Soft Delete)")
+    void should_mark_category_as_deleted() {
+        Category category = new Category(1L, "Transporte");
+
+        assertFalse(category.isDeleted());
+        assertNull(category.getDeletedAt());
+
+        category.delete();
+
+        assertTrue(category.isDeleted());
+        assertNotNull(category.getDeletedAt());
+    }
 }

@@ -19,15 +19,21 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public boolean existsByUserIdAndNameIgnoreCase(Long userId, String name) {
-        return springDataRepository.existsByUserIdAndNameIgnoreCase(userId, name);
+        return springDataRepository.existsByUserIdAndNameIgnoreCaseAndDeletedAtIsNull(userId, name);
     }
 
     @Override
     public Category save(Category category) {
         CategoryEntity entity = new CategoryEntity();
+
+        if (category.getId() != null) {
+            entity = springDataRepository.findById(category.getId()).orElse(new CategoryEntity());
+        }
+
         entity.setUserId(category.getUserId());
         entity.setName(category.getName());
         entity.setCreatedAt(category.getCreatedAt());
+        entity.setDeletedAt(category.getDeletedAt());
 
         CategoryEntity savedEntity = springDataRepository.save(entity);
 
@@ -37,22 +43,24 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public List<Category> findAllByUserId(Long userId) {
-        return springDataRepository.findAllByUserIdOrderByNameAsc(userId)
+        return springDataRepository.findAllByUserIdAndDeletedAtIsNullOrderByNameAsc(userId)
                 .stream()
-                .map(entity -> {
-                    Category domain = new Category(entity.getUserId(), entity.getName());
-                    domain.setId(entity.getId());
-                    return domain;
-                }).toList();
+                .map(this::toDomain)
+                .toList();
     }
 
     @Override
     public Optional<Category> findById(Long id) {
         return springDataRepository.findById(id)
-                .map(entity -> {
-                    Category domain = new Category(entity.getUserId(), entity.getName());
-                    domain.setId(entity.getId());
-                    return domain;
-                });
+                .map(this::toDomain);
+    }
+
+    private Category toDomain(CategoryEntity entity) {
+        Category domain = new Category(entity.getUserId(), entity.getName());
+        domain.setId(entity.getId());
+        if (entity.getDeletedAt() != null) {
+            domain.loadDeletedAt(entity.getDeletedAt());
+        }
+        return domain;
     }
 }
