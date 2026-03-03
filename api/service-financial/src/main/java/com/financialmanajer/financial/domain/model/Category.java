@@ -37,8 +37,14 @@ public class Category {
     }
 
     public void updateName(String newName) {
-        validateName(newName);
-        this.name = newName;
+        if (newName == null) {
+            throw new DomainValidationException("category.validation.name.required");
+        }
+
+        String normalizedName = newName.trim();
+
+        validateName(normalizedName);
+        this.name = normalizedName;
     }
 
     public Long getId() { return id; }
