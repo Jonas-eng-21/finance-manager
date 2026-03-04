@@ -1,12 +1,10 @@
-package com.financialmanajer.financial.application.dto;
+package com.financialmanajer.financial.presentation.dto;
 
 import com.financialmanajer.financial.domain.model.TransactionType;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record TransactionFilterDTO(
-        Long userId,
+public record TransactionFilterParams(
         LocalDate startDate,
         LocalDate endDate,
         TransactionType type,
@@ -15,6 +13,9 @@ public record TransactionFilterDTO(
         BigDecimal maxAmount,
         String sortBy,
         String sortDirection,
-        int page,
-        int size
-) {}
+        Integer page,
+        Integer size
+) {
+    public int getPageOrDefault() { return page != null ? page : 0; }
+    public int getSizeOrDefault() { return size != null ? size : 10; }
+}

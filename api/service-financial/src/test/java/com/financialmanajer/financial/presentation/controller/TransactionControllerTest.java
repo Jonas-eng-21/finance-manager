@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.financialmanajer.financial.application.dto.TransactionSummary;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -94,10 +95,11 @@ class TransactionControllerTest {
     void should_list_transactions_with_filters() throws Exception {
         Transaction mockTx = new Transaction(1L, TransactionType.EXPENSE, new BigDecimal("150.00"), 10L, "Teste", LocalDate.now());
         mockTx.setId(100L);
-        PaginatedResult<Transaction> mockResult = new PaginatedResult<>(List.of(mockTx), 0, 10, 1, 1);
+
+        TransactionSummary mockSummary = new TransactionSummary(BigDecimal.ZERO, new BigDecimal("150.00"), new BigDecimal("-150.00"));
+        PaginatedResult<Transaction, TransactionSummary> mockResult = new PaginatedResult<>(List.of(mockTx), 0, 10, 1, 1, mockSummary);
 
         when(listTransactionsUseCase.execute(any(TransactionFilterDTO.class))).thenReturn(mockResult);
-
         mockMvc.perform(get("/api/transactions")
                         .header("X-User-Id", "1")
                         .param("page", "0")
