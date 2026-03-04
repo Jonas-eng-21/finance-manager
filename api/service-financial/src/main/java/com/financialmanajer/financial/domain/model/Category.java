@@ -9,14 +9,17 @@ public class Category {
     private String name;
     private LocalDateTime createdAt;
     private java.time.LocalDateTime deletedAt;
+    private TransactionType type;
 
-    public Category(Long userId, String name) {
-        validateUserId(userId);
+    public Category(Long userId, String name, TransactionType type) {
         validateName(name);
+        if (userId == null) throw new DomainValidationException("category.validation.user_id.required");
+        if (type == null) throw new DomainValidationException("transaction.validation.type.required");
 
         this.userId = userId;
         this.name = name.trim();
-        this.createdAt = LocalDateTime.now();
+        this.type = type;
+        this.createdAt = java.time.LocalDateTime.now();
     }
 
     private void validateUserId(Long userId) {
@@ -68,6 +71,7 @@ public class Category {
     public Long getUserId() { return userId; }
     public String getName() { return name; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public TransactionType getType() { return type; }
 
     public void setId(Long id) {
         this.id = id;

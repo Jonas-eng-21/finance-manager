@@ -3,6 +3,7 @@ package com.financialmanajer.financial.application.usecase;
 import com.financialmanajer.financial.application.dto.UpdateCategoryDTO;
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.domain.model.Category;
+import com.financialmanajer.financial.domain.model.TransactionType;
 import com.financialmanajer.financial.domain.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class UpdateCategoryUseCaseTest {
     void should_update_category_successfully() {
         Long userId = 1L;
         Long catId = 100L;
-        Category category = new Category(userId, "Antigo Nome");
+        Category category = new Category(userId, "Antigo Nome" , TransactionType.EXPENSE);
         category.setId(catId);
 
         UpdateCategoryDTO dto = new UpdateCategoryDTO(catId, userId, "Novo Nome");
@@ -49,7 +50,7 @@ class UpdateCategoryUseCaseTest {
     void should_throw_exception_when_editing_others_category() {
         Long ownerId = 1L;
         Long intruderId = 2L;
-        Category category = new Category(ownerId, "Alimentação");
+        Category category = new Category(ownerId, "Alimentação" , TransactionType.EXPENSE);
 
         UpdateCategoryDTO dto = new UpdateCategoryDTO(100L, intruderId, "Ataque");
 
@@ -63,7 +64,7 @@ class UpdateCategoryUseCaseTest {
     void should_allow_update_when_name_is_same_as_current() {
         Long userId = 1L;
         Long catId = 100L;
-        Category category = new Category(userId, "Saúde");
+        Category category = new Category(userId, "Saúde" , TransactionType.EXPENSE);
         category.setId(catId);
 
         UpdateCategoryDTO dto = new UpdateCategoryDTO(catId, userId, "  Saúde  ");

@@ -1,6 +1,7 @@
 package com.financialmanajer.financial.infrastructure.persistence.repository;
 
 import com.financialmanajer.financial.domain.model.Category;
+import com.financialmanajer.financial.domain.model.TransactionType;
 import com.financialmanajer.financial.infrastructure.persistence.entity.CategoryEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +29,7 @@ class CategoryRepositoryImplTest {
     @Test
     @DisplayName("Deve salvar a categoria no banco de dados e retornar com ID preenchido")
     void should_save_category() {
-        Category category = new Category(1L, "Salário");
+        Category category = new Category(1L, "Salário" , TransactionType.EXPENSE);
 
         Category saved = categoryRepository.save(category);
 
@@ -43,7 +45,9 @@ class CategoryRepositoryImplTest {
         CategoryEntity entity = new CategoryEntity();
         entity.setUserId(2L);
         entity.setName("Investimentos");
-        entity.setCreatedAt(java.time.LocalDateTime.now());
+        entity.setType(TransactionType.EXPENSE);
+        entity.setCreatedAt(LocalDateTime.now());
+        springDataRepository.save(entity);
 
         springDataRepository.save(entity);
 
@@ -60,10 +64,16 @@ class CategoryRepositoryImplTest {
         Long user2 = 2L;
 
         CategoryEntity c1 = new CategoryEntity();
-        c1.setUserId(user1); c1.setName("User 1 Cat"); c1.setCreatedAt(java.time.LocalDateTime.now());
+        c1.setUserId(user1);
+        c1.setName("User 1 Cat");
+        c1.setType(TransactionType.EXPENSE);
+        c1.setCreatedAt(LocalDateTime.now());
 
         CategoryEntity c2 = new CategoryEntity();
-        c2.setUserId(user2); c2.setName("User 2 Cat"); c2.setCreatedAt(java.time.LocalDateTime.now());
+        c2.setUserId(user2);
+        c2.setName("User 2 Cat");
+        c2.setType(TransactionType.EXPENSE);
+        c2.setCreatedAt(LocalDateTime.now());
 
         springDataRepository.saveAll(List.of(c1, c2));
 
@@ -79,9 +89,13 @@ class CategoryRepositoryImplTest {
         Long userId = 1L;
 
         CategoryEntity active = new CategoryEntity();
+        active.setType(TransactionType.EXPENSE);
+        active.setCreatedAt(LocalDateTime.now());
         active.setUserId(userId); active.setName("Ativa"); active.setCreatedAt(java.time.LocalDateTime.now());
 
         CategoryEntity deleted = new CategoryEntity();
+        deleted.setType(TransactionType.EXPENSE);
+        deleted.setCreatedAt(LocalDateTime.now());
         deleted.setUserId(userId); deleted.setName("Deletada"); deleted.setCreatedAt(java.time.LocalDateTime.now());
         deleted.setDeletedAt(java.time.LocalDateTime.now());
 

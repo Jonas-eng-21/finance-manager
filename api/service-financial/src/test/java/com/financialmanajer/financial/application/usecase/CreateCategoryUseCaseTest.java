@@ -3,6 +3,7 @@ package com.financialmanajer.financial.application.usecase;
 import com.financialmanajer.financial.application.dto.CreateCategoryDTO;
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.domain.model.Category;
+import com.financialmanajer.financial.domain.model.TransactionType;
 import com.financialmanajer.financial.domain.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class CreateCategoryUseCaseTest {
     @Test
     @DisplayName("Deve criar categoria com sucesso quando não existe duplicidade")
     void should_create_category_successfully() {
-        CreateCategoryDTO dto = new CreateCategoryDTO(1L, "Alimentação");
+        CreateCategoryDTO dto = new CreateCategoryDTO(1L, "Alimentação" , TransactionType.EXPENSE);
 
         when(categoryRepository.existsByUserIdAndNameIgnoreCase(1L, "Alimentação")).thenReturn(false);
 
@@ -49,7 +50,7 @@ class CreateCategoryUseCaseTest {
     @Test
     @DisplayName("Deve lançar exceção quando a categoria já existe para o usuário")
     void should_throw_exception_when_category_already_exists() {
-        CreateCategoryDTO dto = new CreateCategoryDTO(1L, "Transporte");
+        CreateCategoryDTO dto = new CreateCategoryDTO(1L, "Transporte" , TransactionType.EXPENSE);
 
         when(categoryRepository.existsByUserIdAndNameIgnoreCase(1L, "Transporte")).thenReturn(true);
 

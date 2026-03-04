@@ -1,6 +1,7 @@
 package com.financialmanajer.financial.application.usecase;
 
 import com.financialmanajer.financial.domain.model.Category;
+import com.financialmanajer.financial.domain.model.TransactionType;
 import com.financialmanajer.financial.domain.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,8 @@ class ListCategoriesUseCaseTest {
         // Arrange
         Long userId = 1L;
         List<Category> mockCategories = List.of(
-                new Category(userId, "Alimentação"),
-                new Category(userId, "Lazer")
+                new Category(userId, "Alimentação" , TransactionType.EXPENSE),
+                new Category(userId, "Lazer" , TransactionType.EXPENSE)
         );
         when(categoryRepository.findAllByUserId(userId)).thenReturn(mockCategories);
 

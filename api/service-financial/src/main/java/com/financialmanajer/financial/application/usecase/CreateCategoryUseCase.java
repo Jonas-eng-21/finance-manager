@@ -20,7 +20,7 @@ public class CreateCategoryUseCase {
             throw new DomainValidationException("category.validation.name.already_exists");
         }
 
-        Category category = new Category(dto.userId(), dto.name());
+        Category category = new Category(dto.userId(), dto.name(), dto.type());
 
         return categoryRepository.save(category);
     }

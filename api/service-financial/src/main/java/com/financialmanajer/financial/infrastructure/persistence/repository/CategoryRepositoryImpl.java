@@ -32,6 +32,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
         entity.setUserId(category.getUserId());
         entity.setName(category.getName());
+
+        entity.setType(category.getType());
+
         entity.setCreatedAt(category.getCreatedAt());
         entity.setDeletedAt(category.getDeletedAt());
 
@@ -56,11 +59,17 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     private Category toDomain(CategoryEntity entity) {
-        Category domain = new Category(entity.getUserId(), entity.getName());
+        Category domain = new Category(entity.getUserId(), entity.getName(), entity.getType());
         domain.setId(entity.getId());
         if (entity.getDeletedAt() != null) {
             domain.loadDeletedAt(entity.getDeletedAt());
         }
         return domain;
+    }
+
+    @Override
+    public Optional<Category> findActiveByIdAndUserId(Long id, Long userId) {
+        return springDataRepository.findByIdAndUserIdAndDeletedAtIsNull(id, userId)
+                .map(this::toDomain);
     }
 }

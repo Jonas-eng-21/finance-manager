@@ -41,7 +41,7 @@ public class CategoryController {
             @RequestHeader("X-User-Id") Long userId,
             @Valid @RequestBody CreateCategoryRequest request) {
 
-        CreateCategoryDTO dto = new CreateCategoryDTO(userId, request.name());
+        CreateCategoryDTO dto = new CreateCategoryDTO(userId, request.name(), request.type());
 
         Category category = createCategoryUseCase.execute(dto);
 
