@@ -1,6 +1,9 @@
 package com.financialmanajer.financial.presentation.controller;
 
+import com.financialmanajer.financial.application.dto.PaginatedResult;
+import com.financialmanajer.financial.application.dto.TransactionFilterDTO;
 import com.financialmanajer.financial.application.usecase.CreateTransactionUseCase;
+import com.financialmanajer.financial.application.usecase.ListTransactionsUseCase;
 import com.financialmanajer.financial.domain.model.Transaction;
 import com.financialmanajer.financial.domain.model.TransactionType;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +19,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +35,9 @@ class TransactionControllerTest {
 
     @Mock
     private CreateTransactionUseCase createTransactionUseCase;
+
+    @Mock
+    private ListTransactionsUseCase listTransactionsUseCase;
 
     @InjectMocks
     private TransactionController transactionController;
@@ -79,5 +87,27 @@ class TransactionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(emptyJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Deve listar transações com paginação e filtros retornando 200 OK")
+    void should_list_transactions_with_filters() throws Exception {
+        Transaction mockTx = new Transaction(1L, TransactionType.EXPENSE, new BigDecimal("150.00"), 10L, "Teste", LocalDate.now());
+        mockTx.setId(100L);
+        PaginatedResult<Transaction> mockResult = new PaginatedResult<>(List.of(mockTx), 0, 10, 1, 1);
+
+        when(listTransactionsUseCase.execute(any(TransactionFilterDTO.class))).thenReturn(mockResult);
+
+        mockMvc.perform(get("/api/transactions")
+                        .header("X-User-Id", "1")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("type", "EXPENSE")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.content[0].id").value(100))
+                .andExpect(jsonPath("$.content[0].amount").value(150.00));
     }
 }
