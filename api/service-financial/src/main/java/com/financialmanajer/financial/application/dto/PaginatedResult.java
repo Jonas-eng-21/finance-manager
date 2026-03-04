@@ -2,10 +2,11 @@ package com.financialmanajer.financial.application.dto;
 
 import java.util.List;
 
-public record PaginatedResult<T>(
+public record PaginatedResult<T, S>(
         List<T> content,
         int page,
         int size,
         long totalElements,
-        int totalPages
+        int totalPages,
+        S summary
 ) {}
