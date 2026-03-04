@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import com.financialmanajer.financial.application.dto.TransactionSummary;
 import java.math.BigDecimal;
 import com.financialmanajer.financial.presentation.dto.TransactionFilterParams;
+import com.financialmanajer.financial.application.dto.UpdateTransactionDTO;
+import com.financialmanajer.financial.application.usecase.UpdateTransactionUseCase;
+import com.financialmanajer.financial.presentation.dto.UpdateTransactionRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,12 +29,15 @@ public class TransactionController {
 
     private final CreateTransactionUseCase createTransactionUseCase;
     private final ListTransactionsUseCase listTransactionsUseCase;
+    private final UpdateTransactionUseCase updateTransactionUseCase;
 
     public TransactionController(
             CreateTransactionUseCase createTransactionUseCase,
-            ListTransactionsUseCase listTransactionsUseCase) {
+            ListTransactionsUseCase listTransactionsUseCase,
+            UpdateTransactionUseCase updateTransactionUseCase) {
         this.createTransactionUseCase = createTransactionUseCase;
         this.listTransactionsUseCase = listTransactionsUseCase;
+        this.updateTransactionUseCase = updateTransactionUseCase;
     }
 
     @PostMapping
@@ -80,5 +86,26 @@ public class TransactionController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TransactionResponse> updateTransaction(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody UpdateTransactionRequest request) {
+
+        UpdateTransactionDTO dto = new UpdateTransactionDTO(
+                id,
+                userId,
+                request.type(),
+                request.amount(),
+                request.categoryId(),
+                request.description(),
+                request.transactionDate()
+        );
+
+        Transaction transaction = updateTransactionUseCase.execute(dto);
+
+        return ResponseEntity.ok(TransactionResponse.fromDomain(transaction));
     }
 }
