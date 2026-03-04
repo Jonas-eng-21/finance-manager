@@ -13,6 +13,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.financialmanajer.financial.application.dto.TransactionSummary;
+import java.math.BigDecimal;
+import com.financialmanajer.financial.presentation.dto.TransactionFilterParams;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -53,31 +56,27 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<PaginatedResult<TransactionResponse>> listTransactions(
+    public ResponseEntity<PaginatedResult<TransactionResponse, TransactionSummary>> listTransactions(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestParam(required = false) LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam(required = false) TransactionType type,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            TransactionFilterParams params
     ) {
+
         TransactionFilterDTO filter = new TransactionFilterDTO(
-                userId, startDate, endDate, type, categoryId, page, size
+                userId, params.startDate(), params.endDate(), params.type(),
+                params.categoryId(), params.minAmount(), params.maxAmount(),
+                params.sortBy(), params.sortDirection(),
+                params.getPageOrDefault(), params.getSizeOrDefault()
         );
 
-        PaginatedResult<Transaction> domainResult = listTransactionsUseCase.execute(filter);
+        PaginatedResult<Transaction, TransactionSummary> domainResult = listTransactionsUseCase.execute(filter);
 
         List<TransactionResponse> responseContent = domainResult.content().stream()
                 .map(TransactionResponse::fromDomain)
                 .toList();
 
-        PaginatedResult<TransactionResponse> response = new PaginatedResult<>(
-                responseContent,
-                domainResult.page(),
-                domainResult.size(),
-                domainResult.totalElements(),
-                domainResult.totalPages()
+        PaginatedResult<TransactionResponse, TransactionSummary> response = new PaginatedResult<>(
+                responseContent, domainResult.page(), domainResult.size(),
+                domainResult.totalElements(), domainResult.totalPages(), domainResult.summary()
         );
 
         return ResponseEntity.ok(response);
