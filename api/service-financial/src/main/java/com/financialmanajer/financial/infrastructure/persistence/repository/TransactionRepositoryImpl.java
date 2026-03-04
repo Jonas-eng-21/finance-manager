@@ -23,6 +23,7 @@ import com.financialmanajer.financial.domain.model.TransactionType;
 import java.math.BigDecimal;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
@@ -113,5 +114,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         transaction.setId(entity.getId());
 
         return transaction;
+    }
+
+    @Override
+    public Optional<Transaction> findByIdAndUserId(Long id, Long userId) {
+        return springDataRepository.findByIdAndUserId(id, userId)
+                .map(this::toDomain);
     }
 }
