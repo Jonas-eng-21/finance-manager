@@ -8,6 +8,7 @@ import com.financialmanajer.financial.application.usecase.ListCategoriesUseCase;
 import com.financialmanajer.financial.application.usecase.UpdateCategoryUseCase;
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.domain.model.Category;
+import com.financialmanajer.financial.domain.model.TransactionType;
 import com.financialmanajer.financial.presentation.dto.CreateCategoryRequest;
 import com.financialmanajer.financial.presentation.dto.UpdateCategoryRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -51,8 +52,8 @@ class CategoryControllerTest {
     @Test
     @DisplayName("Deve retornar 201 Created e a categoria quando a requisição for válida")
     void should_return_201_when_request_is_valid() throws Exception {
-        CreateCategoryRequest request = new CreateCategoryRequest("Alimentação");
-        Category mockCategory = new Category(1L, "Alimentação");
+        CreateCategoryRequest request = new CreateCategoryRequest("Alimentação" , TransactionType.EXPENSE);
+        Category mockCategory = new Category(1L, "Alimentação" , TransactionType.EXPENSE);
         mockCategory.setId(100L);
 
         when(createCategoryUseCase.execute(any(CreateCategoryDTO.class))).thenReturn(mockCategory);
@@ -70,7 +71,7 @@ class CategoryControllerTest {
     @Test
     @DisplayName("Deve retornar erro de validação (400) quando o nome for vazio")
     void should_return_400_when_name_is_empty() throws Exception {
-        CreateCategoryRequest request = new CreateCategoryRequest("");
+        CreateCategoryRequest request = new CreateCategoryRequest("" , TransactionType.EXPENSE);
 
         mockMvc.perform(post("/api/categories")
                         .with(csrf())
@@ -83,7 +84,7 @@ class CategoryControllerTest {
     @Test
     @DisplayName("Deve retornar 409 Conflict quando a categoria já existe")
     void should_return_409_when_category_already_exists() throws Exception {
-        CreateCategoryRequest request = new CreateCategoryRequest("Lazer");
+        CreateCategoryRequest request = new CreateCategoryRequest("Lazer" , TransactionType.EXPENSE);
 
         when(createCategoryUseCase.execute(any(CreateCategoryDTO.class)))
                 .thenThrow(new DomainValidationException("category.validation.name.already_exists"));
@@ -102,7 +103,7 @@ class CategoryControllerTest {
     void should_return_200_and_list_when_listing() throws Exception {
         Long userId = 1L;
         when(listCategoriesUseCase.execute(userId)).thenReturn(List.of(
-                new Category(userId, "Alimentação")
+                new Category(userId, "Alimentação" , TransactionType.EXPENSE)
         ));
 
         mockMvc.perform(get("/api/categories")
@@ -114,7 +115,7 @@ class CategoryControllerTest {
     @Test
     @DisplayName("Deve retornar 204 No Content ao editar categoria válida")
     void should_return_204_when_update_is_valid() throws Exception {
-        UpdateCategoryRequest request = new UpdateCategoryRequest("Nome Editado");
+        CreateCategoryRequest request = new CreateCategoryRequest("Nome Editado", TransactionType.EXPENSE);
 
         mockMvc.perform(put("/api/categories/100")
                         .with(csrf())
