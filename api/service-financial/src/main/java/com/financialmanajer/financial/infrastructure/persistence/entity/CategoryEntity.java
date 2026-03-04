@@ -1,5 +1,6 @@
 package com.financialmanajer.financial.infrastructure.persistence.entity;
 
+import com.financialmanajer.financial.domain.model.TransactionType;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -25,6 +26,10 @@ public class CategoryEntity {
     @Column(name = "deleted_at")
     private java.time.LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private TransactionType type;
+
     public CategoryEntity() {}
 
     public Long getId() { return id; }
@@ -37,4 +42,6 @@ public class CategoryEntity {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public java.time.LocalDateTime getDeletedAt() { return deletedAt; }
     public void setDeletedAt(java.time.LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+    public TransactionType getType() { return type; }
+    public void setType(TransactionType type) { this.type = type; }
 }
