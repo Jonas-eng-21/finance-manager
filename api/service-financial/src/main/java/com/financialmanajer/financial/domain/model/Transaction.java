@@ -11,11 +11,11 @@ public class Transaction {
 
     private Long id;
     private final Long userId;
-    private final TransactionType type;
-    private final BigDecimal amount;
-    private final Long categoryId;
-    private final String description;
-    private final LocalDate transactionDate;
+    private TransactionType type;
+    private BigDecimal amount;
+    private Long categoryId;
+    private String description;
+    private LocalDate transactionDate;
     private final LocalDateTime createdAt;
 
     public Transaction(Long userId, TransactionType type, BigDecimal amount, Long categoryId, String description, LocalDate transactionDate) {
@@ -46,6 +46,19 @@ public class Transaction {
         if (description != null && description.trim().length() > 255) {
             throw new DomainValidationException("transaction.validation.description.too_long");
         }
+    }
+
+    public void update(TransactionType type, BigDecimal amount, Long categoryId, String description, LocalDate transactionDate) {
+        if (amount != null) {
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new DomainValidationException("transaction.validation.amount.positive");
+            }
+            this.amount = amount.setScale(2, java.math.RoundingMode.HALF_UP);
+        }
+        if (type != null) this.type = type;
+        if (categoryId != null) this.categoryId = categoryId;
+        if (description != null) this.description = description;
+        if (transactionDate != null) this.transactionDate = transactionDate;
     }
 
     public Long getId() { return id; }
