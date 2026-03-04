@@ -10,4 +10,5 @@ public interface CategoryRepository {
     Category save(Category category);
     List<Category> findAllByUserId(Long userId);
     Optional<Category> findById(Long id);
+    Optional<Category> findActiveByIdAndUserId(Long id, Long userId);
 }
