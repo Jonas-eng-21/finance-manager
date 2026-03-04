@@ -32,6 +32,9 @@ public class TransactionSpecification {
                 predicates.add(cb.equal(root.get("categoryId"), filter.categoryId()));
             }
 
+            predicates.add(cb.equal(root.get("userId"), filter.userId()));
+            predicates.add(cb.isNull(root.get("deletedAt")));
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
