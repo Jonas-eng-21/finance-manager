@@ -2,6 +2,7 @@ package com.financialmanajer.financial.application.usecase;
 
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.domain.model.Category;
+import com.financialmanajer.financial.domain.model.TransactionType;
 import com.financialmanajer.financial.domain.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class DeleteCategoryUseCaseTest {
     void should_soft_delete_category_successfully() {
         Long userId = 1L;
         Long catId = 100L;
-        Category category = new Category(userId, "Lazer");
+        Category category = new Category(userId, "Lazer" , TransactionType.EXPENSE);
 
         when(categoryRepository.findById(catId)).thenReturn(Optional.of(category));
 
@@ -44,7 +45,7 @@ class DeleteCategoryUseCaseTest {
     void should_fail_when_deleting_others_category() {
         Long ownerId = 1L;
         Long intruderId = 2L;
-        Category category = new Category(ownerId, "Salário");
+        Category category = new Category(ownerId, "Salário" , TransactionType.EXPENSE);
 
         when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
 
@@ -55,7 +56,7 @@ class DeleteCategoryUseCaseTest {
     @DisplayName("Não deve alterar nada se a categoria já estiver deletada (Idempotência)")
     void should_do_nothing_if_already_deleted() {
         Long userId = 1L;
-        Category category = new Category(userId, "Antiga");
+        Category category = new Category(userId, "Antiga" , TransactionType.EXPENSE);
         category.delete();
 
         when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
