@@ -20,7 +20,7 @@ public class UpdateTransactionUseCase {
     }
 
     public Transaction execute(UpdateTransactionDTO dto) {
-        Transaction transaction = transactionRepository.findByIdAndUserId(dto.id(), dto.userId())
+        Transaction transaction = transactionRepository.findActiveByIdAndUserId(dto.id(), dto.userId())
                 .orElseThrow(() -> new DomainValidationException("transaction.validation.not_found"));
 
         if (dto.categoryId() != null) {

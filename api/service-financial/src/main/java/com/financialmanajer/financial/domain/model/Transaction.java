@@ -17,6 +17,7 @@ public class Transaction {
     private String description;
     private LocalDate transactionDate;
     private final LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
 
     public Transaction(Long userId, TransactionType type, BigDecimal amount, Long categoryId, String description, LocalDate transactionDate) {
         validate(userId, type, amount, categoryId, description, transactionDate);
@@ -59,6 +60,22 @@ public class Transaction {
         if (categoryId != null) this.categoryId = categoryId;
         if (description != null) this.description = description;
         if (transactionDate != null) this.transactionDate = transactionDate;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void loadDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() { return id; }

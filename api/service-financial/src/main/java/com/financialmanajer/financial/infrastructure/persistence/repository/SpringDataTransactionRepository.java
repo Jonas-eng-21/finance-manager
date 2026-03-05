@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface SpringDataTransactionRepository extends
         JpaRepository<TransactionEntity, Long>,
         JpaSpecificationExecutor<TransactionEntity> {
-    Optional<TransactionEntity> findByIdAndUserId(Long id, Long userId);
+    Optional<TransactionEntity> findByIdAndUserIdAndDeletedAtIsNull(Long id, Long userId);
 }

@@ -47,6 +47,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         entity.setDescription(transaction.getDescription());
         entity.setTransactionDate(transaction.getTransactionDate());
         entity.setCreatedAt(transaction.getCreatedAt());
+        entity.setDeletedAt(transaction.getDeletedAt());
 
         TransactionEntity savedEntity = springDataRepository.save(entity);
 
@@ -112,13 +113,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 entity.getTransactionDate()
         );
         transaction.setId(entity.getId());
+        transaction.loadDeletedAt(entity.getDeletedAt());
 
         return transaction;
     }
 
     @Override
-    public Optional<Transaction> findByIdAndUserId(Long id, Long userId) {
-        return springDataRepository.findByIdAndUserId(id, userId)
+    public Optional<Transaction> findActiveByIdAndUserId(Long id, Long userId) {
+        return springDataRepository.findByIdAndUserIdAndDeletedAtIsNull(id, userId)
                 .map(this::toDomain);
     }
 }

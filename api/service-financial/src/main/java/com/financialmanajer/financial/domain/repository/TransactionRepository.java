@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface TransactionRepository {
     Transaction save(Transaction transaction);
     PaginatedResult<Transaction, TransactionSummary> findByFilter(TransactionFilterDTO filter);
-    Optional<Transaction> findByIdAndUserId(Long id, Long userId);
+    Optional<Transaction> findActiveByIdAndUserId(Long id, Long userId);
 }

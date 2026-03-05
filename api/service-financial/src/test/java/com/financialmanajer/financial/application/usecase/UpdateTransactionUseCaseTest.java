@@ -44,7 +44,7 @@ class UpdateTransactionUseCaseTest {
                 1L, userId, null, new BigDecimal("150.00"), null, "Nova", null
         );
 
-        when(transactionRepository.findByIdAndUserId(1L, userId)).thenReturn(Optional.of(existingTx));
+        when(transactionRepository.findActiveByIdAndUserId(1L, userId)).thenReturn(Optional.of(existingTx));
         when(transactionRepository.save(any(Transaction.class))).thenAnswer(i -> i.getArgument(0));
 
         Transaction updatedTx = updateTransactionUseCase.execute(dto);
@@ -60,7 +60,7 @@ class UpdateTransactionUseCaseTest {
     void should_fail_if_transaction_not_found() {
         UpdateTransactionDTO dto = new UpdateTransactionDTO(1L, 2L, null, null, null, null, null);
 
-        when(transactionRepository.findByIdAndUserId(1L, 2L)).thenReturn(Optional.empty());
+        when(transactionRepository.findActiveByIdAndUserId(1L, 2L)).thenReturn(Optional.empty());
 
         DomainValidationException ex = assertThrows(DomainValidationException.class, () -> updateTransactionUseCase.execute(dto));
         assertEquals("transaction.validation.not_found", ex.getMessage());
@@ -76,7 +76,7 @@ class UpdateTransactionUseCaseTest {
 
         Category newCategory = new Category(userId, "Venda", TransactionType.INCOME);
 
-        when(transactionRepository.findByIdAndUserId(1L, userId)).thenReturn(Optional.of(existingTx));
+        when(transactionRepository.findActiveByIdAndUserId(1L, userId)).thenReturn(Optional.of(existingTx));
         when(categoryRepository.findActiveByIdAndUserId(20L, userId)).thenReturn(Optional.of(newCategory));
 
         DomainValidationException ex = assertThrows(DomainValidationException.class, () -> updateTransactionUseCase.execute(dto));
