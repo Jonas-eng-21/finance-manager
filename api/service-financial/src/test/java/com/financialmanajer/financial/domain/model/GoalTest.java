@@ -82,4 +82,53 @@ class GoalTest {
 
         assertEquals(new BigDecimal("1000.00"), goal.calculateMonthlyRequiredSaving(start));
     }
+
+    @Test
+    @DisplayName("Deve calcular corretamente o valor restante (remainingAmount)")
+    void should_calculate_remaining_amount() {
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusMonths(10);
+
+        Goal goal = new Goal(1L, "Carro", new BigDecimal("50000.00"), start, end);
+
+        assertEquals(new BigDecimal("50000.00"), goal.calculateRemainingAmount());
+
+        goal.loadCurrentAmount(new BigDecimal("15000.00"));
+        assertEquals(new BigDecimal("35000.00"), goal.calculateRemainingAmount());
+
+        goal.loadCurrentAmount(new BigDecimal("55000.00"));
+        assertEquals(new BigDecimal("0.00"), goal.calculateRemainingAmount());
+    }
+
+    @Test
+    @DisplayName("Deve calcular corretamente o percentual de progresso limitando a 100%")
+    void should_calculate_progress_percentage() {
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusMonths(10);
+        Goal goal = new Goal(1L, "Reserva", new BigDecimal("10000.00"), start, end);
+
+        goal.loadCurrentAmount(new BigDecimal("5000.00"));
+        assertEquals(new BigDecimal("50.00"), goal.calculateProgressPercentage());
+
+        goal = new Goal(1L, "Viagem", new BigDecimal("5000.00"), start, end);
+        goal.loadCurrentAmount(new BigDecimal("6000.00")); // Passou da meta!
+        assertEquals(new BigDecimal("100.00"), goal.calculateProgressPercentage()); // 👈 Agora crava em 100
+    }
+
+    @Test
+    @DisplayName("Deve determinar o status correto da meta")
+    void should_determine_correct_status() {
+        LocalDate today = LocalDate.now();
+        Goal goal = new Goal(1L, "Carro", new BigDecimal("50000.00"), today, today.plusMonths(5));
+
+        goal.loadCurrentAmount(new BigDecimal("10000.00"));
+        assertEquals(GoalStatus.IN_PROGRESS, goal.getStatus(today));
+
+        goal.loadCurrentAmount(new BigDecimal("50000.00"));
+        assertEquals(GoalStatus.COMPLETED, goal.getStatus(today));
+
+        Goal overdueGoal = new Goal(1L, "Dívida", new BigDecimal("1000.00"), today.minusMonths(2), today.minusDays(1));
+        overdueGoal.loadCurrentAmount(new BigDecimal("500.00"));
+        assertEquals(GoalStatus.OVERDUE, overdueGoal.getStatus(today));
+    }
 }
