@@ -4,6 +4,12 @@ import com.financialmanajer.financial.domain.model.Goal;
 import com.financialmanajer.financial.domain.repository.GoalRepository;
 import com.financialmanajer.financial.infrastructure.persistence.entity.GoalEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import com.financialmanajer.financial.application.dto.GoalFilterDTO;
+import com.financialmanajer.financial.application.dto.PaginatedResult;
+import java.util.List;
 
 @Repository
 public class GoalRepositoryImpl implements GoalRepository {
@@ -60,5 +66,30 @@ public class GoalRepositoryImpl implements GoalRepository {
         goal.loadUpdatedAt(entity.getUpdatedAt());
         goal.loadDeletedAt(entity.getDeletedAt());
         return goal;
+    }
+
+    @Override
+    public PaginatedResult<Goal, Void> findAllActiveByUserId(Long userId, GoalFilterDTO filter) {
+        String sortBy = filter.sortBy() != null && filter.sortBy().matches("^(targetDate|createdAt|name|targetAmount|currentAmount)$")
+                ? filter.sortBy() : "targetDate"; // targetDate é o padrão
+
+        Sort.Direction direction = "desc".equalsIgnoreCase(filter.direction()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(filter.page(), filter.size(), Sort.by(direction, sortBy));
+
+        Page<GoalEntity> page = springDataRepository.findByUserIdAndDeletedAtIsNull(userId, pageRequest);
+
+        List<Goal> goals = page.getContent().stream()
+                .map(this::toDomain)
+                .toList();
+
+        return new PaginatedResult<>(
+                goals,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                null
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.financialmanajer.financial.presentation.dto;
 
 import com.financialmanajer.financial.domain.model.Goal;
+import com.financialmanajer.financial.domain.model.GoalStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,6 +12,9 @@ public record GoalResponse(
         String name,
         BigDecimal targetAmount,
         BigDecimal currentAmount,
+        BigDecimal remainingAmount,
+        BigDecimal progressPercentage,
+        GoalStatus status,
         LocalDate startDate,
         LocalDate targetDate,
         BigDecimal monthlyRequiredSaving,
@@ -22,6 +26,9 @@ public record GoalResponse(
                 goal.getName(),
                 goal.getTargetAmount(),
                 goal.getCurrentAmount(),
+                goal.calculateRemainingAmount(),
+                goal.calculateProgressPercentage(),
+                goal.getStatus(LocalDate.now()),
                 goal.getStartDate(),
                 goal.getTargetDate(),
                 goal.calculateMonthlyRequiredSaving(LocalDate.now()),

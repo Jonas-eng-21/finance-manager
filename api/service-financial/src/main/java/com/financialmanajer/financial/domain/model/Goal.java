@@ -70,6 +70,34 @@ public class Goal {
         return remainingAmount.divide(BigDecimal.valueOf(monthsRemaining), 2, RoundingMode.HALF_UP);
     }
 
+    public BigDecimal calculateRemainingAmount() {
+        return targetAmount.subtract(currentAmount)
+                .max(BigDecimal.ZERO)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal calculateProgressPercentage() {
+        if (targetAmount.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+
+        BigDecimal percentage = currentAmount.divide(targetAmount, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal("100"))
+                .setScale(2, RoundingMode.HALF_UP);
+
+        return percentage.min(new BigDecimal("100.00"));
+    }
+
+    public GoalStatus getStatus(LocalDate currentDate) {
+        if (currentAmount.compareTo(targetAmount) >= 0) {
+            return GoalStatus.COMPLETED;
+        }
+        if (currentDate.isAfter(targetDate)) {
+            return GoalStatus.OVERDUE;
+        }
+        return GoalStatus.IN_PROGRESS;
+    }
+
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
