@@ -3,6 +3,7 @@ package com.financialmanajer.financial.presentation.controller;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
 import com.financialmanajer.financial.application.dto.TransactionFilterDTO;
 import com.financialmanajer.financial.application.usecase.CreateTransactionUseCase;
+import com.financialmanajer.financial.application.usecase.DeleteTransactionUseCase;
 import com.financialmanajer.financial.application.usecase.ListTransactionsUseCase;
 import com.financialmanajer.financial.application.usecase.UpdateTransactionUseCase;
 import com.financialmanajer.financial.domain.model.Transaction;
@@ -32,6 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionControllerTest {
@@ -46,6 +50,9 @@ class TransactionControllerTest {
 
     @Mock
     private UpdateTransactionUseCase updateTransactionUseCase;
+
+    @Mock
+    private DeleteTransactionUseCase deleteTransactionUseCase;
 
     @InjectMocks
     private TransactionController transactionController;
@@ -157,5 +164,21 @@ class TransactionControllerTest {
                 .andExpect(status().isBadRequest());
 
         verify(updateTransactionUseCase, never()).execute(any());
+    }
+
+    @Test
+    @DisplayName("Deve deletar transação com sucesso e retornar 204 No Content")
+    void should_delete_transaction_successfully() throws Exception {
+        Long transactionId = 100L;
+        Long userId = 1L;
+
+        doNothing().when(deleteTransactionUseCase).execute(transactionId, userId);
+
+        mockMvc.perform(delete("/api/transactions/{id}", transactionId)
+                        .header("X-User-Id", userId.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(deleteTransactionUseCase, times(1)).execute(transactionId, userId);
     }
 }
