@@ -17,6 +17,10 @@ import com.financialmanajer.financial.application.dto.GoalFilterDTO;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
 import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import com.financialmanajer.financial.application.dto.UpdateGoalProgressDTO;
+import com.financialmanajer.financial.application.usecase.UpdateGoalProgressUseCase;
+import com.financialmanajer.financial.domain.exception.ResourceNotFoundException;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
 
 import java.math.BigDecimal;
@@ -40,12 +44,17 @@ class GoalControllerTest {
     @Mock
     private ListGoalsUseCase listGoalsUseCase;
 
+    @Mock
+    private UpdateGoalProgressUseCase updateGoalProgressUseCase;
+
     @InjectMocks
     private GoalController goalController;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(goalController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(goalController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -112,6 +121,58 @@ class GoalControllerTest {
                 .andExpect(jsonPath("$.content[0].currentAmount").value(3500.00))
                 .andExpect(jsonPath("$.content[0].remainingAmount").value(6500.00))
                 .andExpect(jsonPath("$.content[0].progressPercentage").value(35.00))
-                .andExpect(jsonPath("$.content[0].status").value("IN_PROGRESS")); // 👈 Validando a melhoria Sênior que fizemos!
+                .andExpect(jsonPath("$.content[0].status").value("IN_PROGRESS"));
+    }
+
+    @org.springframework.web.bind.annotation.ControllerAdvice
+    static class GlobalExceptionHandler {
+        @org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
+        public org.springframework.http.ResponseEntity<String> handleNotFound(ResourceNotFoundException ex) {
+            return org.springframework.http.ResponseEntity.status(404).body(ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Deve atualizar o progresso da meta e retornar 200 OK")
+    void should_update_progress_and_return_200() throws Exception {
+        Goal mockGoal = new Goal(1L, "Reserva", new BigDecimal("10000.00"), LocalDate.now(), LocalDate.now().plusMonths(12));
+        mockGoal.setId(10L);
+        mockGoal.addProgress(new BigDecimal("500.00"));
+
+        when(updateGoalProgressUseCase.execute(any(UpdateGoalProgressDTO.class))).thenReturn(mockGoal);
+
+        String jsonPayload = """
+                {
+                  "amount": 500.00
+                }
+                """;
+
+        mockMvc.perform(patch("/api/goals/10/progress")
+                        .header("X-User-Id", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.currentAmount").value(500.00))
+                .andExpect(jsonPath("$.progressPercentage").value(5.00));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 404 Not Found se a meta não existir")
+    void should_return_404_when_goal_not_found() throws Exception {
+        when(updateGoalProgressUseCase.execute(any(UpdateGoalProgressDTO.class)))
+                .thenThrow(new ResourceNotFoundException("goal.not_found"));
+
+        String jsonPayload = """
+                {
+                  "amount": 500.00
+                }
+                """;
+
+        mockMvc.perform(patch("/api/goals/99/progress")
+                        .header("X-User-Id", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isNotFound());
     }
 }

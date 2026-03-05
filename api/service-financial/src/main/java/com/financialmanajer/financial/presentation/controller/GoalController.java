@@ -12,6 +12,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.financialmanajer.financial.application.usecase.UpdateGoalProgressUseCase;
+import com.financialmanajer.financial.application.dto.UpdateGoalProgressDTO;
+import com.financialmanajer.financial.presentation.dto.UpdateGoalProgressRequest;
 
 import java.util.List;
 
@@ -21,11 +24,16 @@ public class GoalController {
 
     private final CreateGoalUseCase createGoalUseCase;
     private final ListGoalsUseCase listGoalsUseCase;
+    private final UpdateGoalProgressUseCase updateGoalProgressUseCase;
 
-    public GoalController(CreateGoalUseCase createGoalUseCase, ListGoalsUseCase listGoalsUseCase) {
+    public GoalController(CreateGoalUseCase createGoalUseCase,
+                          ListGoalsUseCase listGoalsUseCase,
+                          UpdateGoalProgressUseCase updateGoalProgressUseCase) {
         this.createGoalUseCase = createGoalUseCase;
         this.listGoalsUseCase = listGoalsUseCase;
+        this.updateGoalProgressUseCase = updateGoalProgressUseCase;
     }
+
     @PostMapping
     public ResponseEntity<GoalResponse> createGoal(
             @RequestHeader("X-User-Id") Long userId,
@@ -70,5 +78,18 @@ public class GoalController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{goalId}/progress")
+    public ResponseEntity<GoalResponse> updateProgress(
+            @PathVariable Long goalId,
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody UpdateGoalProgressRequest request) {
+
+        UpdateGoalProgressDTO dto = new UpdateGoalProgressDTO(goalId, userId, request.amount());
+
+        Goal updatedGoal = updateGoalProgressUseCase.execute(dto);
+
+        return ResponseEntity.ok(GoalResponse.fromDomain(updatedGoal));
     }
 }
