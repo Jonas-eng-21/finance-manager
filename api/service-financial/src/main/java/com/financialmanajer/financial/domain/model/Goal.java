@@ -98,6 +98,16 @@ public class Goal {
         return GoalStatus.IN_PROGRESS;
     }
 
+    public void addProgress(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainValidationException("goal.validation.progress.positive");
+        }
+
+        this.currentAmount = this.currentAmount.add(amount).setScale(2, RoundingMode.HALF_UP);
+
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
