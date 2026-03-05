@@ -4,6 +4,7 @@ import com.financialmanajer.financial.application.dto.CreateTransactionDTO;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
 import com.financialmanajer.financial.application.dto.TransactionFilterDTO;
 import com.financialmanajer.financial.application.usecase.CreateTransactionUseCase;
+import com.financialmanajer.financial.application.usecase.DeleteTransactionUseCase;
 import com.financialmanajer.financial.application.usecase.ListTransactionsUseCase;
 import com.financialmanajer.financial.domain.model.Transaction;
 import com.financialmanajer.financial.domain.model.TransactionType;
@@ -30,14 +31,17 @@ public class TransactionController {
     private final CreateTransactionUseCase createTransactionUseCase;
     private final ListTransactionsUseCase listTransactionsUseCase;
     private final UpdateTransactionUseCase updateTransactionUseCase;
+    private final DeleteTransactionUseCase deleteTransactionUseCase;
 
     public TransactionController(
             CreateTransactionUseCase createTransactionUseCase,
             ListTransactionsUseCase listTransactionsUseCase,
-            UpdateTransactionUseCase updateTransactionUseCase) {
+            UpdateTransactionUseCase updateTransactionUseCase,
+            DeleteTransactionUseCase deleteTransactionUseCase) {
         this.createTransactionUseCase = createTransactionUseCase;
         this.listTransactionsUseCase = listTransactionsUseCase;
         this.updateTransactionUseCase = updateTransactionUseCase;
+        this.deleteTransactionUseCase = deleteTransactionUseCase;
     }
 
     @PostMapping
@@ -107,5 +111,15 @@ public class TransactionController {
         Transaction transaction = updateTransactionUseCase.execute(dto);
 
         return ResponseEntity.ok(TransactionResponse.fromDomain(transaction));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransaction(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long userId) {
+
+        deleteTransactionUseCase.execute(id, userId);
+
+        return ResponseEntity.noContent().build();
     }
 }
