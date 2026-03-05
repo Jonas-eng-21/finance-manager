@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import com.financialmanajer.financial.application.dto.GoalFilterDTO;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class GoalRepositoryImpl implements GoalRepository {
@@ -91,5 +92,11 @@ public class GoalRepositoryImpl implements GoalRepository {
                 page.getTotalPages(),
                 null
         );
+    }
+
+    @Override
+    public Optional<Goal> findByIdAndUserId(Long id, Long userId) {
+        return springDataRepository.findByIdAndUserIdAndDeletedAtIsNull(id, userId)
+                .map(this::toDomain);
     }
 }

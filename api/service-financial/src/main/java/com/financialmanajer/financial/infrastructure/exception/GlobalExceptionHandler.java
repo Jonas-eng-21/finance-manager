@@ -1,6 +1,7 @@
 package com.financialmanajer.financial.infrastructure.exception;
 
 import com.financialmanajer.financial.domain.exception.DomainValidationException;
+import com.financialmanajer.financial.domain.exception.ResourceNotFoundException;
 import com.financialmanajer.financial.presentation.dto.ErrorResponse;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -75,5 +76,10 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }
