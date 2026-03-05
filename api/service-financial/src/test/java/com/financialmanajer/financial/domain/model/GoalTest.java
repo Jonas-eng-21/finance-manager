@@ -111,8 +111,8 @@ class GoalTest {
         assertEquals(new BigDecimal("50.00"), goal.calculateProgressPercentage());
 
         goal = new Goal(1L, "Viagem", new BigDecimal("5000.00"), start, end);
-        goal.loadCurrentAmount(new BigDecimal("6000.00")); // Passou da meta!
-        assertEquals(new BigDecimal("100.00"), goal.calculateProgressPercentage()); // 👈 Agora crava em 100
+        goal.loadCurrentAmount(new BigDecimal("6000.00"));
+        assertEquals(new BigDecimal("100.00"), goal.calculateProgressPercentage());
     }
 
     @Test
@@ -130,5 +130,36 @@ class GoalTest {
         Goal overdueGoal = new Goal(1L, "Dívida", new BigDecimal("1000.00"), today.minusMonths(2), today.minusDays(1));
         overdueGoal.loadCurrentAmount(new BigDecimal("500.00"));
         assertEquals(GoalStatus.OVERDUE, overdueGoal.getStatus(today));
+    }
+
+    @Test
+    @DisplayName("Deve adicionar progresso a uma meta e atualizar o currentAmount")
+    void should_add_progress_to_goal() {
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusMonths(10);
+        Goal goal = new Goal(1L, "Reserva", new BigDecimal("10000.00"), start, end);
+
+        goal.loadCurrentAmount(new BigDecimal("1000.00"));
+
+        goal.addProgress(new BigDecimal("500.00"));
+
+        assertEquals(new BigDecimal("1500.00"), goal.getCurrentAmount());
+        assertNotNull(goal.getUpdatedAt());
+    }
+
+    @Test
+    @DisplayName("Deve falhar ao tentar adicionar progresso zero ou negativo")
+    void should_fail_if_progress_amount_is_invalid() {
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusMonths(10);
+        Goal goal = new Goal(1L, "Viagem", new BigDecimal("5000.00"), start, end);
+
+        DomainValidationException ex1 = assertThrows(DomainValidationException.class,
+                () -> goal.addProgress(BigDecimal.ZERO));
+        assertEquals("goal.validation.progress.positive", ex1.getMessage());
+
+        DomainValidationException ex2 = assertThrows(DomainValidationException.class,
+                () -> goal.addProgress(new BigDecimal("-100.00")));
+        assertEquals("goal.validation.progress.positive", ex2.getMessage());
     }
 }
