@@ -16,4 +16,5 @@ public interface SpringDataGoalRepository extends JpaRepository<GoalEntity, Long
     Page<GoalEntity> findByUserIdAndDeletedAtIsNullAndArchivedAtIsNull(Long userId, Pageable pageable);
     Optional<GoalEntity> findByIdAndUserIdAndDeletedAtIsNull(Long id, Long userId);
     List<GoalEntity> findByDeletedAtIsNullAndArchivedAtIsNull();
+    Page<GoalEntity> findByUserIdAndDeletedAtIsNullAndArchivedAtIsNotNull(Long userId, Pageable pageable);
 }

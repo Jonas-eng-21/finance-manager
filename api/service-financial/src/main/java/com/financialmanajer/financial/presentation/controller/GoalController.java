@@ -3,9 +3,7 @@ package com.financialmanajer.financial.presentation.controller;
 import com.financialmanajer.financial.application.dto.CreateGoalDTO;
 import com.financialmanajer.financial.application.dto.GoalFilterDTO;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
-import com.financialmanajer.financial.application.usecase.CreateGoalUseCase;
-import com.financialmanajer.financial.application.usecase.DeleteGoalUseCase;
-import com.financialmanajer.financial.application.usecase.ListGoalsUseCase;
+import com.financialmanajer.financial.application.usecase.*;
 import com.financialmanajer.financial.domain.model.Goal;
 import com.financialmanajer.financial.presentation.dto.CreateGoalRequest;
 import com.financialmanajer.financial.presentation.dto.GoalResponse;
@@ -13,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.financialmanajer.financial.application.usecase.UpdateGoalProgressUseCase;
 import com.financialmanajer.financial.application.dto.UpdateGoalProgressDTO;
 import com.financialmanajer.financial.presentation.dto.UpdateGoalProgressRequest;
 
@@ -27,15 +24,18 @@ public class GoalController {
     private final ListGoalsUseCase listGoalsUseCase;
     private final UpdateGoalProgressUseCase updateGoalProgressUseCase;
     private final DeleteGoalUseCase deleteGoalUseCase;
+    private final ListArchivedGoalsUseCase listArchivedGoalsUseCase;
 
     public GoalController(CreateGoalUseCase createGoalUseCase,
                           ListGoalsUseCase listGoalsUseCase,
                           UpdateGoalProgressUseCase updateGoalProgressUseCase,
-                          DeleteGoalUseCase deleteGoalUseCase) {
+                          DeleteGoalUseCase deleteGoalUseCase,
+                          ListArchivedGoalsUseCase listArchivedGoalsUseCase) {
         this.createGoalUseCase = createGoalUseCase;
         this.listGoalsUseCase = listGoalsUseCase;
         this.updateGoalProgressUseCase = updateGoalProgressUseCase;
         this.deleteGoalUseCase = deleteGoalUseCase;
+        this.listArchivedGoalsUseCase = listArchivedGoalsUseCase;
     }
 
     @PostMapping
@@ -78,6 +78,25 @@ public class GoalController {
                 domainResult.size(),
                 domainResult.totalElements(),
                 domainResult.totalPages(),
+                null
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/archived")
+    public ResponseEntity<PaginatedResult<GoalResponse, Void>> listArchivedGoals(
+            @RequestHeader("X-User-Id") Long userId,
+            @ModelAttribute GoalFilterDTO filter) {
+
+        var result = listArchivedGoalsUseCase.execute(userId, filter);
+
+        PaginatedResult<GoalResponse, Void> response = new PaginatedResult<>(
+                result.content().stream().map(GoalResponse::fromDomain).toList(),
+                result.page(),
+                result.size(),
+                result.totalElements(),
+                result.totalPages(),
                 null
         );
 

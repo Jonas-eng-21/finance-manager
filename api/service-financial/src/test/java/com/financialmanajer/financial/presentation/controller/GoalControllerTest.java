@@ -1,7 +1,6 @@
 package com.financialmanajer.financial.presentation.controller;
 
-import com.financialmanajer.financial.application.usecase.CreateGoalUseCase;
-import com.financialmanajer.financial.application.usecase.DeleteGoalUseCase;
+import com.financialmanajer.financial.application.usecase.*;
 import com.financialmanajer.financial.domain.model.Goal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,13 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import com.financialmanajer.financial.application.usecase.ListGoalsUseCase;
 import com.financialmanajer.financial.application.dto.GoalFilterDTO;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
 import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import com.financialmanajer.financial.application.dto.UpdateGoalProgressDTO;
-import com.financialmanajer.financial.application.usecase.UpdateGoalProgressUseCase;
 import com.financialmanajer.financial.domain.exception.ResourceNotFoundException;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
@@ -50,6 +47,9 @@ class GoalControllerTest {
 
     @Mock
     private DeleteGoalUseCase deleteGoalUseCase;
+
+    @Mock
+    private ListArchivedGoalsUseCase listArchivedGoalsUseCase;
 
     @InjectMocks
     private GoalController goalController;
@@ -207,5 +207,25 @@ class GoalControllerTest {
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/goals/{id}", goalId)
                         .header("X-User-Id", String.valueOf(userId)))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Deve retornar 200 OK ao listar metas arquivadas")
+    void should_return_200_when_listing_archived_goals() throws Exception {
+        Long userId = 1L;
+
+        org.mockito.Mockito.when(listArchivedGoalsUseCase.execute(org.mockito.ArgumentMatchers.eq(userId), org.mockito.ArgumentMatchers.any()))
+                .thenReturn(new com.financialmanajer.financial.application.dto.PaginatedResult<>(
+                        java.util.List.of(), 0, 10, 0L, 0, null
+                ));
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/goals/archived")
+                        .header("X-User-Id", String.valueOf(userId))
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+
+        org.mockito.Mockito.verify(listArchivedGoalsUseCase, org.mockito.Mockito.times(1))
+                .execute(org.mockito.ArgumentMatchers.eq(userId), org.mockito.ArgumentMatchers.any());
     }
 }

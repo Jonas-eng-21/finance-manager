@@ -12,4 +12,5 @@ public interface GoalRepository {
     PaginatedResult<Goal, Void> findAllActiveByUserId(Long userId, GoalFilterDTO filter);
     Optional<Goal> findByIdAndUserId(Long id, Long userId);
     java.util.List<com.financialmanajer.financial.domain.model.Goal> findAllActive();
+    PaginatedResult<Goal, Void> findAllArchivedByUserId(Long userId, GoalFilterDTO filter);
 }

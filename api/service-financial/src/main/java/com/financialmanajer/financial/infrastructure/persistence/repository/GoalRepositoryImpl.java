@@ -74,10 +74,9 @@ public class GoalRepositoryImpl implements GoalRepository {
     @Override
     public PaginatedResult<Goal, Void> findAllActiveByUserId(Long userId, GoalFilterDTO filter) {
         String sortBy = filter.sortBy() != null && filter.sortBy().matches("^(targetDate|createdAt|name|targetAmount|currentAmount)$")
-                ? filter.sortBy() : "targetDate"; // targetDate é o padrão
+                ? filter.sortBy() : "targetDate";
 
         Sort.Direction direction = "desc".equalsIgnoreCase(filter.direction()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-
         PageRequest pageRequest = PageRequest.of(filter.page(), filter.size(), Sort.by(direction, sortBy));
 
         Page<GoalEntity> page = springDataRepository.findByUserIdAndDeletedAtIsNullAndArchivedAtIsNull(userId, pageRequest);
@@ -86,14 +85,24 @@ public class GoalRepositoryImpl implements GoalRepository {
                 .map(this::toDomain)
                 .toList();
 
-        return new PaginatedResult<>(
-                goals,
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
-                null
-        );
+        return new PaginatedResult<>(goals, page.getNumber(), page.getSize(), page.getTotalElements(), page.getTotalPages(), null);
+    }
+
+    @Override
+    public PaginatedResult<Goal, Void> findAllArchivedByUserId(Long userId, GoalFilterDTO filter) {
+        String sortBy = filter.sortBy() != null && filter.sortBy().matches("^(targetDate|createdAt|name|targetAmount|currentAmount)$")
+                ? filter.sortBy() : "targetDate";
+
+        Sort.Direction direction = "desc".equalsIgnoreCase(filter.direction()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        PageRequest pageRequest = PageRequest.of(filter.page(), filter.size(), Sort.by(direction, sortBy));
+
+        Page<GoalEntity> page = springDataRepository.findByUserIdAndDeletedAtIsNullAndArchivedAtIsNotNull(userId, pageRequest);
+
+        List<Goal> goals = page.getContent().stream()
+                .map(this::toDomain)
+                .toList();
+
+        return new PaginatedResult<>(goals, page.getNumber(), page.getSize(), page.getTotalElements(), page.getTotalPages(), null);
     }
 
     @Override
