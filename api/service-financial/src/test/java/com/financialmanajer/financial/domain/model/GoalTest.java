@@ -176,4 +176,45 @@ class GoalTest {
         goal.removeProgress(new BigDecimal("1000.00"));
         assertEquals(new BigDecimal("0.00"), goal.getCurrentAmount());
     }
+
+    @Test
+    @DisplayName("Deve retornar true se a meta estiver concluída")
+    void should_return_true_if_goal_is_completed() {
+        LocalDate start = LocalDate.now();
+        Goal goal = new Goal(1L, "Viagem", new BigDecimal("5000.00"), start, start.plusMonths(5));
+
+        assertFalse(goal.isCompleted());
+
+        goal.loadCurrentAmount(new BigDecimal("5000.00"));
+        assertTrue(goal.isCompleted());
+
+        goal.loadCurrentAmount(new BigDecimal("6000.00"));
+        assertTrue(goal.isCompleted());
+    }
+
+    @Test
+    @DisplayName("Deve retornar true se a meta estiver próxima do prazo limite")
+    void should_return_true_if_goal_is_near_deadline() {
+        LocalDate today = LocalDate.of(2025, 5, 25);
+        LocalDate deadline = LocalDate.of(2025, 6, 1);
+
+        Goal goal = new Goal(1L, "Japão", new BigDecimal("10000.00"), today.minusMonths(5), deadline);
+
+        assertTrue(goal.isNearDeadline(today, 7));
+
+        assertTrue(goal.isNearDeadline(today, 10));
+
+        assertFalse(goal.isNearDeadline(today, 3));
+    }
+
+    @Test
+    @DisplayName("Não deve considerar próxima do prazo se a meta já estiver vencida")
+    void should_not_be_near_deadline_if_already_overdue() {
+        LocalDate today = LocalDate.now();
+        LocalDate pastDeadline = today.minusDays(2);
+
+        Goal goal = new Goal(1L, "Dívida", new BigDecimal("1000.00"), today.minusMonths(1), pastDeadline);
+
+        assertFalse(goal.isNearDeadline(today, 7));
+    }
 }
