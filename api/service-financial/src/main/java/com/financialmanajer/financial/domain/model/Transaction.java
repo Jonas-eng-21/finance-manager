@@ -18,6 +18,7 @@ public class Transaction {
     private LocalDate transactionDate;
     private final LocalDateTime createdAt;
     private LocalDateTime deletedAt;
+    private Long goalId;
 
     public Transaction(Long userId, TransactionType type, BigDecimal amount, Long categoryId, String description, LocalDate transactionDate) {
         validate(userId, type, amount, categoryId, description, transactionDate);
@@ -76,6 +77,17 @@ public class Transaction {
 
     public void loadDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public void linkToGoal(Long goalId) {
+        if (this.type == TransactionType.EXPENSE) {
+            throw new DomainValidationException("transaction.validation.goal.invalid_type");
+        }
+        this.goalId = goalId;
+    }
+
+    public Long getGoalId() {
+        return goalId;
     }
 
     public Long getId() { return id; }

@@ -75,4 +75,25 @@ class TransactionTest {
                 new Transaction(1L, TransactionType.EXPENSE, new BigDecimal("10.0"), 10L, "Desc", null)
         );
     }
+
+    @Test
+    @DisplayName("Deve permitir vincular uma meta se a transação for do tipo INCOME")
+    void should_allow_goal_link_if_income() {
+        Transaction transaction = new Transaction(1L, TransactionType.INCOME, new BigDecimal("500.00"), 2L, "Bônus", LocalDate.now());
+
+        transaction.linkToGoal(10L);
+
+        assertEquals(10L, transaction.getGoalId());
+    }
+
+    @Test
+    @DisplayName("Não deve permitir vincular uma meta se a transação for do tipo EXPENSE")
+    void should_not_allow_goal_link_if_expense() {
+        Transaction transaction = new Transaction(1L, TransactionType.EXPENSE, new BigDecimal("100.00"), 2L, "Mercado", LocalDate.now());
+
+        DomainValidationException exception = assertThrows(DomainValidationException.class,
+                () -> transaction.linkToGoal(10L));
+
+        assertEquals("transaction.validation.goal.invalid_type", exception.getMessage());
+    }
 }

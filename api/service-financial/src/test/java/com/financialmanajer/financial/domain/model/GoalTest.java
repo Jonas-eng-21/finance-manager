@@ -162,4 +162,18 @@ class GoalTest {
                 () -> goal.addProgress(new BigDecimal("-100.00")));
         assertEquals("goal.validation.progress.positive", ex2.getMessage());
     }
+
+    @Test
+    @DisplayName("Deve remover progresso da meta garantindo que o valor não fique negativo")
+    void should_remove_progress_from_goal() {
+        LocalDate start = LocalDate.now();
+        Goal goal = new Goal(1L, "Reserva", new BigDecimal("10000.00"), start, start.plusMonths(12));
+        goal.loadCurrentAmount(new BigDecimal("1000.00"));
+
+        goal.removeProgress(new BigDecimal("400.00"));
+        assertEquals(new BigDecimal("600.00"), goal.getCurrentAmount());
+
+        goal.removeProgress(new BigDecimal("1000.00"));
+        assertEquals(new BigDecimal("0.00"), goal.getCurrentAmount());
+    }
 }
