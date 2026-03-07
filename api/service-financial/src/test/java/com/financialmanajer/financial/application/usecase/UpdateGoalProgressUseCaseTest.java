@@ -45,7 +45,7 @@ class UpdateGoalProgressUseCaseTest {
         Goal updatedGoal = updateGoalProgressUseCase.execute(dto);
 
         assertNotNull(updatedGoal);
-        assertEquals(new BigDecimal("1500.00"), updatedGoal.getCurrentAmount()); // 1000 + 500
+        assertEquals(new BigDecimal("1500.00"), updatedGoal.getCurrentAmount());
 
         verify(goalRepository, times(1)).findByIdAndUserId(goalId, userId);
         verify(goalRepository, times(1)).save(existingGoal);
@@ -63,5 +63,30 @@ class UpdateGoalProgressUseCaseTest {
 
         assertEquals("goal.not_found", ex.getMessage());
         verify(goalRepository, never()).save(any(Goal.class));
+    }
+
+    @Test
+    @DisplayName("Deve arquivar a meta automaticamente ao atingir 100% do valor alvo")
+    void should_archive_goal_automatically_when_target_reached() {
+
+        com.financialmanajer.financial.domain.model.Goal mockGoal = new com.financialmanajer.financial.domain.model.Goal(
+                1L, "Viagem", new java.math.BigDecimal("1000.00"), java.time.LocalDate.now(), java.time.LocalDate.now().plusMonths(6)
+        );
+        mockGoal.setId(10L);
+        mockGoal.loadCurrentAmount(new java.math.BigDecimal("800.00"));
+
+        org.mockito.Mockito.when(goalRepository.findByIdAndUserId(10L, 1L))
+                .thenReturn(java.util.Optional.of(mockGoal));
+
+
+        UpdateGoalProgressDTO dto =
+                new UpdateGoalProgressDTO(10L, 1L, new java.math.BigDecimal("200.00"));
+        updateGoalProgressUseCase.execute(dto);
+
+        org.junit.jupiter.api.Assertions.assertTrue(mockGoal.isCompleted(), "A meta deveria estar concluída");
+        org.junit.jupiter.api.Assertions.assertTrue(mockGoal.isArchived(), "A meta deveria ter sido arquivada automaticamente");
+        org.junit.jupiter.api.Assertions.assertNotNull(mockGoal.getArchivedAt(), "A data de arquivamento não deve ser nula");
+
+        org.mockito.Mockito.verify(goalRepository, org.mockito.Mockito.times(1)).save(mockGoal);
     }
 }

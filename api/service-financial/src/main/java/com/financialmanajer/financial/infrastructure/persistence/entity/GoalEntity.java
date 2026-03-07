@@ -42,6 +42,17 @@ public class GoalEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @jakarta.persistence.Column(name = "archived_at")
+    private java.time.LocalDateTime archivedAt;
+
+    public java.time.LocalDateTime getArchivedAt() {
+        return archivedAt;
+    }
+
+    public void setArchivedAt(java.time.LocalDateTime archivedAt) {
+        this.archivedAt = archivedAt;
+    }
+
     public GoalEntity() {}
 
     public Long getId() { return id; }
