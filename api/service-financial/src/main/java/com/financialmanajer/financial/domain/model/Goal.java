@@ -107,13 +107,13 @@ public class Goal {
             throw new DomainValidationException("goal.validation.progress.positive");
         }
 
+        if (this.isDeleted()) {
+            throw new DomainValidationException("goal.already_deleted");
+        }
+
         this.currentAmount = this.currentAmount.add(amount).setScale(2, RoundingMode.HALF_UP);
 
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public void delete() {
-        this.deletedAt = LocalDateTime.now();
     }
 
     public void removeProgress(BigDecimal amount) {
@@ -125,6 +125,10 @@ public class Goal {
 
         if (this.currentAmount.compareTo(BigDecimal.ZERO) < 0) {
             this.currentAmount = BigDecimal.ZERO;
+        }
+
+        if (this.isDeleted()) {
+            throw new DomainValidationException("goal.already_deleted");
         }
 
         this.currentAmount = this.currentAmount.setScale(2, java.math.RoundingMode.HALF_UP);
@@ -139,6 +143,14 @@ public class Goal {
         long daysRemaining = ChronoUnit.DAYS.between(today, this.targetDate);
 
         return daysRemaining <= thresholdDays;
+    }
+
+    public void delete() {
+        if (this.isDeleted()) {
+            throw new DomainValidationException("goal.already_deleted");
+        }
+        this.deletedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public boolean isDeleted() {

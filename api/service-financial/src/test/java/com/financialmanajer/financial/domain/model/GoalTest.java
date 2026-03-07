@@ -217,4 +217,22 @@ class GoalTest {
 
         assertFalse(goal.isNearDeadline(today, 7));
     }
+
+    @Test
+    @DisplayName("Deve deletar a meta e registrar a data de exclusão")
+    void should_delete_goal() {
+        Goal goal = new Goal(1L, "Carro", new BigDecimal("50000.00"), LocalDate.now(), LocalDate.now().plusMonths(24));
+        assertFalse(goal.isDeleted());
+        assertNull(goal.getDeletedAt());
+
+        goal.delete();
+
+        assertTrue(goal.isDeleted());
+        assertNotNull(goal.getDeletedAt());
+
+        DomainValidationException exception = assertThrows(DomainValidationException.class, () -> {
+            goal.addProgress(new BigDecimal("100.00"));
+        });
+        assertEquals("goal.already_deleted", exception.getMessage());
+    }
 }
