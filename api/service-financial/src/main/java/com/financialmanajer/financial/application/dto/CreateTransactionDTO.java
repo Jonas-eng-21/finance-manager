@@ -11,5 +11,6 @@ public record CreateTransactionDTO(
         BigDecimal amount,
         Long categoryId,
         String description,
-        LocalDate transactionDate
+        LocalDate transactionDate,
+        Long goalId
 ) {}

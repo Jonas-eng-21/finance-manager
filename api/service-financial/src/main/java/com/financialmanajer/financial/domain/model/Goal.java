@@ -111,6 +111,22 @@ public class Goal {
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void removeProgress(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainValidationException("goal.validation.progress.positive");
+        }
+
+        this.currentAmount = this.currentAmount.subtract(amount);
+
+        if (this.currentAmount.compareTo(BigDecimal.ZERO) < 0) {
+            this.currentAmount = BigDecimal.ZERO;
+        }
+
+        this.currentAmount = this.currentAmount.setScale(2, java.math.RoundingMode.HALF_UP);
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public boolean isDeleted() {
         return this.deletedAt != null;
     }

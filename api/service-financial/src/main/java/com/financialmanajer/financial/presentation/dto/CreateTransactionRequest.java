@@ -23,5 +23,7 @@ public record CreateTransactionRequest(
         String description,
 
         @NotNull(message = "{transaction.validation.date.required}")
-        LocalDate transactionDate
+        LocalDate transactionDate,
+
+        Long goalId
 ) {}

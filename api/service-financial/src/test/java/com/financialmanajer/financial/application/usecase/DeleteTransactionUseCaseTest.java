@@ -24,6 +24,9 @@ class DeleteTransactionUseCaseTest {
     @Mock
     private TransactionRepository transactionRepository;
 
+    @Mock
+    private com.financialmanajer.financial.domain.repository.GoalRepository goalRepository;
+
     @InjectMocks
     private DeleteTransactionUseCase deleteTransactionUseCase;
 
@@ -57,5 +60,28 @@ class DeleteTransactionUseCaseTest {
 
         assertEquals("transaction.validation.not_found", ex.getMessage());
         verify(transactionRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Deve deletar uma transação vinculada e estornar o valor da meta")
+    void should_delete_linked_transaction_and_rollback_goal() {
+        Transaction mockTx = new Transaction(1L, com.financialmanajer.financial.domain.model.TransactionType.INCOME, new BigDecimal("500.00"), 2L, "Bônus", LocalDate.now());
+        mockTx.setId(100L);
+        mockTx.linkToGoal(10L);
+
+        com.financialmanajer.financial.domain.model.Goal mockGoal = new com.financialmanajer.financial.domain.model.Goal(1L, "Reserva", new BigDecimal("5000.00"), LocalDate.now(), LocalDate.now().plusMonths(12));
+        mockGoal.setId(10L);
+        mockGoal.loadCurrentAmount(new BigDecimal("1000.00"));
+
+        when(transactionRepository.findActiveByIdAndUserId(100L, 1L)).thenReturn(java.util.Optional.of(mockTx));
+        when(goalRepository.findByIdAndUserId(10L, 1L)).thenReturn(java.util.Optional.of(mockGoal));
+
+        deleteTransactionUseCase.execute(100L, 1L);
+
+        assertTrue(mockTx.isDeleted());
+        assertEquals(new BigDecimal("500.00"), mockGoal.getCurrentAmount());
+
+        verify(goalRepository, times(1)).save(mockGoal);
+        verify(transactionRepository, times(1)).save(mockTx);
     }
 }
