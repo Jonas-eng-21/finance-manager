@@ -235,4 +235,22 @@ class GoalTest {
         });
         assertEquals("goal.already_deleted", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("Deve arquivar a meta e registrar a data de arquivamento")
+    void should_archive_goal() {
+        Goal goal = new Goal(1L, "Reserva", new BigDecimal("5000.00"), LocalDate.now(), LocalDate.now().plusMonths(12));
+        assertFalse(goal.isArchived());
+        assertNull(goal.getArchivedAt());
+
+        goal.archive();
+
+        assertTrue(goal.isArchived());
+        assertNotNull(goal.getArchivedAt());
+
+        DomainValidationException exception = assertThrows(DomainValidationException.class, () -> {
+            goal.addProgress(new BigDecimal("100.00"));
+        });
+        assertEquals("goal.already_archived", exception.getMessage());
+    }
 }

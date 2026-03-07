@@ -17,6 +17,7 @@ public class Goal {
     private BigDecimal currentAmount;
     private LocalDate startDate;
     private LocalDate targetDate;
+    private LocalDateTime archivedAt;
 
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -111,6 +112,10 @@ public class Goal {
             throw new DomainValidationException("goal.already_deleted");
         }
 
+        if (this.isArchived()) {
+            throw new DomainValidationException("goal.already_archived");
+        }
+
         this.currentAmount = this.currentAmount.add(amount).setScale(2, RoundingMode.HALF_UP);
 
         this.updatedAt = LocalDateTime.now();
@@ -129,6 +134,10 @@ public class Goal {
 
         if (this.isDeleted()) {
             throw new DomainValidationException("goal.already_deleted");
+        }
+
+        if (this.isArchived()) {
+            throw new DomainValidationException("goal.already_archived");
         }
 
         this.currentAmount = this.currentAmount.setScale(2, java.math.RoundingMode.HALF_UP);
@@ -155,6 +164,26 @@ public class Goal {
 
     public boolean isDeleted() {
         return this.deletedAt != null;
+    }
+
+    public LocalDateTime getArchivedAt() {
+        return archivedAt;
+    }
+
+    public void loadArchivedAt(LocalDateTime archivedAt) {
+        this.archivedAt = archivedAt;
+    }
+
+    public boolean isArchived() {
+        return this.archivedAt != null;
+    }
+
+    public void archive() {
+        if (this.isArchived()) {
+            throw new DomainValidationException("goal.already_archived");
+        }
+        this.archivedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() { return id; }
