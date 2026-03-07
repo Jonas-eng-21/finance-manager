@@ -45,6 +45,7 @@ public class GoalRepositoryImpl implements GoalRepository {
         entity.setCreatedAt(goal.getCreatedAt());
         entity.setUpdatedAt(goal.getUpdatedAt());
         entity.setDeletedAt(goal.getDeletedAt());
+        entity.setArchivedAt(goal.getArchivedAt());
         return entity;
     }
 
@@ -58,6 +59,7 @@ public class GoalRepositoryImpl implements GoalRepository {
         );
         goal.setId(entity.getId());
         goal.loadCurrentAmount(entity.getCurrentAmount());
+        goal.loadArchivedAt(entity.getArchivedAt());
         try {
             java.lang.reflect.Field createdAtField = Goal.class.getDeclaredField("createdAt");
             createdAtField.setAccessible(true);
@@ -78,7 +80,7 @@ public class GoalRepositoryImpl implements GoalRepository {
 
         PageRequest pageRequest = PageRequest.of(filter.page(), filter.size(), Sort.by(direction, sortBy));
 
-        Page<GoalEntity> page = springDataRepository.findByUserIdAndDeletedAtIsNull(userId, pageRequest);
+        Page<GoalEntity> page = springDataRepository.findByUserIdAndDeletedAtIsNullAndArchivedAtIsNull(userId, pageRequest);
 
         List<Goal> goals = page.getContent().stream()
                 .map(this::toDomain)
@@ -102,7 +104,7 @@ public class GoalRepositoryImpl implements GoalRepository {
 
     @Override
     public List<Goal> findAllActive() {
-        return springDataRepository.findByDeletedAtIsNull()
+        return springDataRepository.findByDeletedAtIsNullAndArchivedAtIsNull()
                 .stream()
                 .map(this::toDomain)
                 .toList();
