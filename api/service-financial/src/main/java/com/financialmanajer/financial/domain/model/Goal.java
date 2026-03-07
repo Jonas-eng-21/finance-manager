@@ -22,6 +22,10 @@ public class Goal {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
+    public boolean isCompleted() {
+        return this.currentAmount.compareTo(this.targetAmount) >= 0;
+    }
+
     public Goal(Long userId, String name, BigDecimal targetAmount, LocalDate startDate, LocalDate targetDate) {
         validate(name, targetAmount, startDate, targetDate);
 
@@ -125,6 +129,16 @@ public class Goal {
 
         this.currentAmount = this.currentAmount.setScale(2, java.math.RoundingMode.HALF_UP);
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public boolean isNearDeadline(LocalDate today, int thresholdDays) {
+        if (today.isAfter(this.targetDate)) {
+            return false;
+        }
+
+        long daysRemaining = ChronoUnit.DAYS.between(today, this.targetDate);
+
+        return daysRemaining <= thresholdDays;
     }
 
     public boolean isDeleted() {

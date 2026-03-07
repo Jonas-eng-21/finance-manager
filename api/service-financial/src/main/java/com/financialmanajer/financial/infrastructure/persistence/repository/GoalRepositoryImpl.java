@@ -99,4 +99,12 @@ public class GoalRepositoryImpl implements GoalRepository {
         return springDataRepository.findByIdAndUserIdAndDeletedAtIsNull(id, userId)
                 .map(this::toDomain);
     }
+
+    @Override
+    public List<Goal> findAllActive() {
+        return springDataRepository.findByDeletedAtIsNull()
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
 }
