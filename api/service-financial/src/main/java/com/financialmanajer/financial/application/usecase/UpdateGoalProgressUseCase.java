@@ -21,6 +21,10 @@ public class UpdateGoalProgressUseCase {
 
         goal.addProgress(dto.amount());
 
+        if (goal.isCompleted() && !goal.isArchived()) {
+            goal.archive();
+        }
+
         return goalRepository.save(goal);
     }
 }

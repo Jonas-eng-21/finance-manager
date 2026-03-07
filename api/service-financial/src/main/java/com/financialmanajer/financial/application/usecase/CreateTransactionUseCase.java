@@ -49,6 +49,10 @@ public class CreateTransactionUseCase {
 
             goal.addProgress(dto.amount());
 
+            if (goal.isCompleted() && !goal.isArchived()) {
+                goal.archive();
+            }
+
             goalRepository.save(goal);
         }
 
