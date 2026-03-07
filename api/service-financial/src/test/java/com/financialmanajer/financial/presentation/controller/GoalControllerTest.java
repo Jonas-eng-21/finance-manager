@@ -1,6 +1,7 @@
 package com.financialmanajer.financial.presentation.controller;
 
 import com.financialmanajer.financial.application.usecase.CreateGoalUseCase;
+import com.financialmanajer.financial.application.usecase.DeleteGoalUseCase;
 import com.financialmanajer.financial.domain.model.Goal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,6 +47,9 @@ class GoalControllerTest {
 
     @Mock
     private UpdateGoalProgressUseCase updateGoalProgressUseCase;
+
+    @Mock
+    private DeleteGoalUseCase deleteGoalUseCase;
 
     @InjectMocks
     private GoalController goalController;
@@ -174,5 +178,34 @@ class GoalControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Deve deletar a meta e retornar 204 No Content")
+    void should_delete_goal_and_return_204() throws Exception {
+        Long goalId = 1L;
+        Long userId = 1L;
+
+        org.mockito.Mockito.doNothing().when(deleteGoalUseCase).execute(goalId, userId);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/goals/{id}", goalId)
+                        .header("X-User-Id", String.valueOf(userId)))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNoContent());
+
+        org.mockito.Mockito.verify(deleteGoalUseCase, org.mockito.Mockito.times(1)).execute(goalId, userId);
+    }
+
+    @Test
+    @DisplayName("Deve retornar 404 Not Found ao tentar deletar meta inexistente")
+    void should_return_404_when_deleting_non_existent_goal() throws Exception {
+        Long goalId = 99L;
+        Long userId = 1L;
+
+        org.mockito.Mockito.doThrow(new com.financialmanajer.financial.domain.exception.ResourceNotFoundException("goal.not_found"))
+                .when(deleteGoalUseCase).execute(goalId, userId);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/goals/{id}", goalId)
+                        .header("X-User-Id", String.valueOf(userId)))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNotFound());
     }
 }
