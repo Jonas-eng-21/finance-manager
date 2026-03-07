@@ -22,4 +22,10 @@ public class UseCaseConfig {
     public DeleteGoalUseCase deleteGoalUseCase(GoalRepository goalRepository) {
         return new DeleteGoalUseCase(goalRepository);
     }
+
+    @org.springframework.context.annotation.Bean
+    public com.financialmanajer.financial.application.usecase.ListArchivedGoalsUseCase listArchivedGoalsUseCase(
+            com.financialmanajer.financial.domain.repository.GoalRepository goalRepository) {
+        return new com.financialmanajer.financial.application.usecase.ListArchivedGoalsUseCase(goalRepository);
+    }
 }
