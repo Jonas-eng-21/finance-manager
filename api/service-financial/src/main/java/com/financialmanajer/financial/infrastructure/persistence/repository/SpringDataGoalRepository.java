@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,4 +15,5 @@ public interface SpringDataGoalRepository extends JpaRepository<GoalEntity, Long
     boolean existsByNameIgnoreCaseAndUserIdAndDeletedAtIsNull(String name, Long userId);
     Page<GoalEntity> findByUserIdAndDeletedAtIsNull(Long userId, Pageable pageable);
     Optional<GoalEntity> findByIdAndUserIdAndDeletedAtIsNull(Long id, Long userId);
+    List<GoalEntity> findByDeletedAtIsNull();
 }
