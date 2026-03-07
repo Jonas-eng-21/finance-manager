@@ -4,6 +4,7 @@ import com.financialmanajer.financial.application.dto.CreateGoalDTO;
 import com.financialmanajer.financial.application.dto.GoalFilterDTO;
 import com.financialmanajer.financial.application.dto.PaginatedResult;
 import com.financialmanajer.financial.application.usecase.CreateGoalUseCase;
+import com.financialmanajer.financial.application.usecase.DeleteGoalUseCase;
 import com.financialmanajer.financial.application.usecase.ListGoalsUseCase;
 import com.financialmanajer.financial.domain.model.Goal;
 import com.financialmanajer.financial.presentation.dto.CreateGoalRequest;
@@ -25,13 +26,16 @@ public class GoalController {
     private final CreateGoalUseCase createGoalUseCase;
     private final ListGoalsUseCase listGoalsUseCase;
     private final UpdateGoalProgressUseCase updateGoalProgressUseCase;
+    private final DeleteGoalUseCase deleteGoalUseCase;
 
     public GoalController(CreateGoalUseCase createGoalUseCase,
                           ListGoalsUseCase listGoalsUseCase,
-                          UpdateGoalProgressUseCase updateGoalProgressUseCase) {
+                          UpdateGoalProgressUseCase updateGoalProgressUseCase,
+                          DeleteGoalUseCase deleteGoalUseCase) {
         this.createGoalUseCase = createGoalUseCase;
         this.listGoalsUseCase = listGoalsUseCase;
         this.updateGoalProgressUseCase = updateGoalProgressUseCase;
+        this.deleteGoalUseCase = deleteGoalUseCase;
     }
 
     @PostMapping
@@ -91,5 +95,15 @@ public class GoalController {
         Goal updatedGoal = updateGoalProgressUseCase.execute(dto);
 
         return ResponseEntity.ok(GoalResponse.fromDomain(updatedGoal));
+    }
+
+    @DeleteMapping("/{id}")
+    public org.springframework.http.ResponseEntity<Void> deleteGoal(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long id) {
+
+        deleteGoalUseCase.execute(id, userId);
+
+        return org.springframework.http.ResponseEntity.noContent().build();
     }
 }
