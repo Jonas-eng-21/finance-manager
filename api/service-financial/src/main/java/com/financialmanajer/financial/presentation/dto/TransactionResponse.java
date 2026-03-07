@@ -14,7 +14,8 @@ public record TransactionResponse(
         Long categoryId,
         String description,
         LocalDate transactionDate,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        Long goalId
 ) {
     public static TransactionResponse fromDomain(Transaction transaction) {
         return new TransactionResponse(
@@ -24,7 +25,8 @@ public record TransactionResponse(
                 transaction.getCategoryId(),
                 transaction.getDescription(),
                 transaction.getTransactionDate(),
-                transaction.getCreatedAt()
+                transaction.getCreatedAt(),
+                transaction.getGoalId()
         );
     }
 }

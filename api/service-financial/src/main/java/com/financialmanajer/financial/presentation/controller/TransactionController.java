@@ -55,7 +55,8 @@ public class TransactionController {
                 request.amount(),
                 request.categoryId(),
                 request.description(),
-                request.transactionDate()
+                request.transactionDate(),
+                request.goalId()
         );
 
         Transaction transaction = createTransactionUseCase.execute(dto);

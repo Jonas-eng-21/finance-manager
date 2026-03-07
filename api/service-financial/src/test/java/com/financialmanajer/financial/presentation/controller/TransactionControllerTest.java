@@ -181,4 +181,37 @@ class TransactionControllerTest {
 
         verify(deleteTransactionUseCase, times(1)).execute(transactionId, userId);
     }
+
+    @Test
+    @DisplayName("Deve retornar 201 Created ao registrar uma transação de INCOME vinculada a uma meta")
+    void should_return_201_when_income_transaction_with_goal() throws Exception {
+        Transaction mockTransaction = new Transaction(
+                1L, TransactionType.INCOME, new BigDecimal("500.00"), 2L, "Bônus", LocalDate.now()
+        );
+        mockTransaction.setId(100L);
+        mockTransaction.linkToGoal(10L);
+
+        when(createTransactionUseCase.execute(any())).thenReturn(mockTransaction);
+
+        String jsonPayload = """
+                {
+                  "type": "INCOME",
+                  "amount": 500.00,
+                  "categoryId": 2,
+                  "description": "Bônus",
+                  "transactionDate": "2026-03-06",
+                  "goalId": 10
+                }
+                """;
+
+        mockMvc.perform(post("/api/transactions")
+                        .header("X-User-Id", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(100))
+                .andExpect(jsonPath("$.amount").value(500.00))
+                .andExpect(jsonPath("$.type").value("INCOME"))
+                .andExpect(jsonPath("$.goalId").value(10));
+    }
 }
