@@ -25,17 +25,20 @@ public class GoalController {
     private final UpdateGoalProgressUseCase updateGoalProgressUseCase;
     private final DeleteGoalUseCase deleteGoalUseCase;
     private final ListArchivedGoalsUseCase listArchivedGoalsUseCase;
+    private final GetGoalStatisticsUseCase getGoalStatisticsUseCase;
 
     public GoalController(CreateGoalUseCase createGoalUseCase,
                           ListGoalsUseCase listGoalsUseCase,
                           UpdateGoalProgressUseCase updateGoalProgressUseCase,
                           DeleteGoalUseCase deleteGoalUseCase,
-                          ListArchivedGoalsUseCase listArchivedGoalsUseCase) {
+                          ListArchivedGoalsUseCase listArchivedGoalsUseCase,
+                          GetGoalStatisticsUseCase getGoalStatisticsUseCase) {
         this.createGoalUseCase = createGoalUseCase;
         this.listGoalsUseCase = listGoalsUseCase;
         this.updateGoalProgressUseCase = updateGoalProgressUseCase;
         this.deleteGoalUseCase = deleteGoalUseCase;
         this.listArchivedGoalsUseCase = listArchivedGoalsUseCase;
+        this.getGoalStatisticsUseCase = getGoalStatisticsUseCase;
     }
 
     @PostMapping
@@ -101,6 +104,14 @@ public class GoalController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<com.financialmanajer.financial.presentation.dto.GoalStatisticsResponse> getStatistics(
+            @RequestHeader("X-User-Id") Long userId) {
+
+        var stats = getGoalStatisticsUseCase.execute(userId);
+        return ResponseEntity.ok(com.financialmanajer.financial.presentation.dto.GoalStatisticsResponse.fromDomain(stats));
     }
 
     @PatchMapping("/{goalId}/progress")

@@ -2,6 +2,7 @@ package com.financialmanajer.financial.presentation.controller;
 
 import com.financialmanajer.financial.application.usecase.*;
 import com.financialmanajer.financial.domain.model.Goal;
+import com.financialmanajer.financial.domain.model.GoalStatistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,9 @@ class GoalControllerTest {
 
     @Mock
     private ListArchivedGoalsUseCase listArchivedGoalsUseCase;
+
+    @Mock
+    private GetGoalStatisticsUseCase getGoalStatisticsUseCase;
 
     @InjectMocks
     private GoalController goalController;
@@ -227,5 +231,26 @@ class GoalControllerTest {
 
         org.mockito.Mockito.verify(listArchivedGoalsUseCase, org.mockito.Mockito.times(1))
                 .execute(org.mockito.ArgumentMatchers.eq(userId), org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    @DisplayName("Deve retornar as estatísticas de metas com status 200 OK")
+    void should_return_goal_statistics_with_200_ok() throws Exception {
+        Long userId = 1L;
+        GoalStatistics stats = new GoalStatistics(10L, 5L, 5L, new java.math.BigDecimal("5000.00"), 30.5);
+
+        org.mockito.Mockito.when(getGoalStatisticsUseCase.execute(userId)).thenReturn(stats);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/goals/statistics")
+                        .header("X-User-Id", String.valueOf(userId)))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.totalGoals").value(10))
+                .andExpect(jsonPath("$.completedGoals").value(5))
+                .andExpect(jsonPath("$.activeGoals").value(5))
+                .andExpect(jsonPath("$.completionRate").value(50.0))
+                .andExpect(jsonPath("$.totalSavedAmount").value(5000.0))
+                .andExpect(jsonPath("$.averageCompletionDays").value(30));
+
+        org.mockito.Mockito.verify(getGoalStatisticsUseCase, org.mockito.Mockito.times(1)).execute(userId);
     }
 }
