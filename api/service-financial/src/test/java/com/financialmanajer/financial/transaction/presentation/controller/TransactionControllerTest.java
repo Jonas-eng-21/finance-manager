@@ -54,6 +54,9 @@ class TransactionControllerTest {
     @Mock
     private DeleteTransactionUseCase deleteTransactionUseCase;
 
+    @Mock
+    private com.financialmanajer.financial.transaction.application.usecase.GetMonthlySummaryUseCase getMonthlySummaryUseCase;
+
     @InjectMocks
     private TransactionController transactionController;
 
@@ -213,5 +216,33 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.amount").value(500.00))
                 .andExpect(jsonPath("$.type").value("INCOME"))
                 .andExpect(jsonPath("$.goalId").value(10));
+    }
+
+    @org.junit.jupiter.api.Test
+    @org.junit.jupiter.api.DisplayName("Deve retornar o resumo financeiro do mes solicitado com status 200 OK")
+    void should_return_monthly_summary_with_200_ok() throws Exception {
+        Long userId = 1L;
+        java.time.YearMonth month = java.time.YearMonth.of(2026, 3);
+
+        com.financialmanajer.financial.transaction.domain.model.MonthlySummary summary =
+                new com.financialmanajer.financial.transaction.domain.model.MonthlySummary(
+                        new java.math.BigDecimal("3000.00"),
+                        new java.math.BigDecimal("1000.00"),
+                        null,
+                        java.util.Map.of("Alimentação", new java.math.BigDecimal("1000.00"))
+                );
+
+        org.mockito.Mockito.when(getMonthlySummaryUseCase.execute(userId, month)).thenReturn(summary);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/transactions/summary")
+                        .header("X-User-Id", String.valueOf(userId))
+                        .param("month", "2026-03"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.totalIncomes").value(3000.00))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.totalExpenses").value(1000.00))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.balance").value(2000.00))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.expensesByCategory.Alimentação").value(1000.00));
+
+        org.mockito.Mockito.verify(getMonthlySummaryUseCase, org.mockito.Mockito.times(1)).execute(userId, month);
     }
 }

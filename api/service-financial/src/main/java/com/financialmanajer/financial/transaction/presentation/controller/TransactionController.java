@@ -1,13 +1,13 @@
 package com.financialmanajer.financial.transaction.presentation.controller;
 
+import com.financialmanajer.financial.shared.domain.exception.DomainValidationException;
 import com.financialmanajer.financial.transaction.application.dto.CreateTransactionDTO;
 import com.financialmanajer.financial.shared.application.dto.PaginatedResult;
 import com.financialmanajer.financial.transaction.application.dto.TransactionFilterDTO;
-import com.financialmanajer.financial.transaction.application.usecase.CreateTransactionUseCase;
-import com.financialmanajer.financial.transaction.application.usecase.DeleteTransactionUseCase;
-import com.financialmanajer.financial.transaction.application.usecase.ListTransactionsUseCase;
+import com.financialmanajer.financial.transaction.application.usecase.*;
 import com.financialmanajer.financial.transaction.domain.model.Transaction;
 import com.financialmanajer.financial.transaction.presentation.dto.CreateTransactionRequest;
+import com.financialmanajer.financial.transaction.presentation.dto.MonthlySummaryResponse;
 import com.financialmanajer.financial.transaction.presentation.dto.TransactionResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import com.financialmanajer.financial.transaction.application.dto.TransactionSummary;
 import com.financialmanajer.financial.transaction.application.dto.TransactionFilterParams;
 import com.financialmanajer.financial.transaction.application.dto.UpdateTransactionDTO;
-import com.financialmanajer.financial.transaction.application.usecase.UpdateTransactionUseCase;
 import com.financialmanajer.financial.transaction.presentation.dto.UpdateTransactionRequest;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -29,16 +30,19 @@ public class TransactionController {
     private final ListTransactionsUseCase listTransactionsUseCase;
     private final UpdateTransactionUseCase updateTransactionUseCase;
     private final DeleteTransactionUseCase deleteTransactionUseCase;
+    private final GetMonthlySummaryUseCase getMonthlySummaryUseCase;
 
     public TransactionController(
             CreateTransactionUseCase createTransactionUseCase,
             ListTransactionsUseCase listTransactionsUseCase,
             UpdateTransactionUseCase updateTransactionUseCase,
-            DeleteTransactionUseCase deleteTransactionUseCase) {
+            DeleteTransactionUseCase deleteTransactionUseCase,
+            GetMonthlySummaryUseCase getMonthlySummaryUseCase) {
         this.createTransactionUseCase = createTransactionUseCase;
         this.listTransactionsUseCase = listTransactionsUseCase;
         this.updateTransactionUseCase = updateTransactionUseCase;
         this.deleteTransactionUseCase = deleteTransactionUseCase;
+        this.getMonthlySummaryUseCase = getMonthlySummaryUseCase;
     }
 
     @PostMapping
@@ -88,6 +92,28 @@ public class TransactionController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<MonthlySummaryResponse> getMonthlySummary(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(value = "month", required = false) String monthParam) {
+
+
+        YearMonth month;
+        try {
+            month = monthParam != null ?
+                    YearMonth.parse(monthParam) :
+                    YearMonth.now();
+        } catch (DateTimeParseException e) {
+            throw new DomainValidationException("transaction.validation.month.invalid");
+        }
+
+        var summary = getMonthlySummaryUseCase.execute(userId, month);
+
+        return ResponseEntity.ok(
+                MonthlySummaryResponse.fromDomain(summary)
+        );
     }
 
     @PatchMapping("/{id}")
