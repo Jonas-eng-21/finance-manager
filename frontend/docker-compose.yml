@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    container_name: finance-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev

@@ -1,0 +1,10 @@
+{
+  "Common": {
+    "title": "Gerenciador Financeiro",
+    "loading": "Carregando..."
+  },
+  "Dashboard": {
+    "welcome": "Bem-vindo de volta, {name}",
+    "totalBalance": "Saldo Total"
+  }
+}
