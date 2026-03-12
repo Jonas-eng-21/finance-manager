@@ -1,0 +1,10 @@
+{
+  "Common": {
+    "title": "Finance Manager",
+    "loading": "Loading..."
+  },
+  "Dashboard": {
+    "welcome": "Welcome back, {name}",
+    "totalBalance": "Total Balance"
+  }
+}
