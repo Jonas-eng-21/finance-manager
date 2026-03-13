@@ -1,65 +1,78 @@
-import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PublicLayout } from "@/components/layout/PublicLayout";
+import { TrendingUp, BarChart3, Zap } from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
+  const t = useTranslations("Home");
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <PublicLayout>
+      <section className="px-6 pt-20 pb-24 text-center md:pt-32 md:pb-32">
+        <h1 className="text-5xl font-extrabold tracking-tight text-foreground sm:text-7xl">
+          {t("hero.title")} <br className="hidden sm:block" />
+          <span className="text-primary">{t("hero.highlight")}</span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+          {t("hero.description")}
+        </p>
+        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+          <Button size="lg" className="h-12 px-8 text-md rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+            <Link href="/register">{t("hero.btnStart")}</Link>
+          </Button>
+          <Button size="lg" variant="secondary" className="h-12 px-8 text-md rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80" asChild>
+            <Link href="/login">{t("hero.btnLogin")}</Link>
+          </Button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="container mx-auto px-6 pb-24">
+        <div className="grid gap-6 md:grid-cols-3">
+          <FeatureCard 
+            icon={<TrendingUp size={24} className="text-primary" />}
+            title={t("features.track.title")}
+            description={t("features.track.description")}
+          />
+          <FeatureCard 
+            icon={<BarChart3 size={24} className="text-primary" />}
+            title={t("features.analysis.title")}
+            description={t("features.analysis.description")}
+          />
+          <FeatureCard 
+            icon={<Zap size={24} className="text-primary" />}
+            title={t("features.fast.title")}
+            description={t("features.fast.description")}
+          />
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="container mx-auto px-6 pb-24">
+        <div className="rounded-4xl bg-primary px-6 py-16 text-center text-primary-foreground shadow-xl">
+          <h2 className="text-3xl font-bold sm:text-4xl">{t("cta.title")}</h2>
+          <p className="mt-4 text-lg text-primary-foreground/80">{t("cta.description")}</p>
+          <Button size="lg" variant="secondary" className="mt-8 rounded-full font-bold bg-background text-primary hover:bg-background/90" asChild>
+            <Link href="/register">{t("cta.btn")}</Link>
+          </Button>
+        </div>
+      </section>
+    </PublicLayout>
+  );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+  return (
+    <Card className="border-border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all rounded-2xl">
+      <CardHeader>
+        <div className="mb-4 w-fit rounded-xl bg-primary/10 p-3">
+          {icon}
+        </div>
+        <CardTitle className="text-xl font-bold">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
   );
 }
