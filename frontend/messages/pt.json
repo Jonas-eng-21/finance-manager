@@ -34,5 +34,29 @@
       "description": "Crie uma conta gratuitamente e comece a acompanhar suas finanças hoje.",
       "btn": "Criar Conta Agora"
     }
+  },
+  "Auth": {
+    "login": {
+      "manager": "Gerenciador Financeiro",
+      "title": "Bem-vindo de volta",
+      "subtitle": "Gerencie suas finanças de forma simples e calma.",
+      "email_label": "E-mail",
+      "email_placeholder": "seu@email.com",
+      "password_label": "Senha",
+      "password_placeholder": "••••••••",
+      "forgot_password": "Esqueceu a senha?",
+      "submit": "Entrar",
+      "submitting": "Entrando...",
+      "divider": "OU CONTINUE COM",
+      "google_btn": "Entrar com Google",
+      "no_account": "Não tem uma conta?",
+      "create_account": "Criar conta",
+      "footer": "© 2026 Finance Manager. Todos os direitos reservados."
+    },
+    "errors": {
+      "invalid_email": "O e-mail fornecido é inválido.",
+      "min_password": "A senha deve ter pelo menos 8 caracteres.",
+      "generic": "Ocorreu um erro ao tentar fazer login. Tente novamente."
+    }
   }
 }

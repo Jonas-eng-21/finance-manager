@@ -34,5 +34,29 @@
       "description": "Create a free account and start tracking your finances today.",
       "btn": "Create Account Now"
     }
+  },
+  "Auth": {
+    "login": {
+      "manager": "Finance Manager",
+      "title": "Welcome back",
+      "subtitle": "Manage your finances simply and calmly.",
+      "email_label": "Email",
+      "email_placeholder": "you@email.com",
+      "password_label": "Password",
+      "password_placeholder": "••••••••",
+      "forgot_password": "Forgot password?",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "divider": "OR CONTINUE WITH",
+      "google_btn": "Log in with Google",
+      "no_account": "Don't have an account?",
+      "create_account": "Create account",
+      "footer": "© 2026 Finance Manager. All rights reserved."
+    },
+    "errors": {
+      "invalid_email": "Please enter a valid email address.",
+      "min_password": "Password must be at least 8 characters long.",
+      "generic": "An error occurred while trying to log in. Please try again."
+    }
   }
 }
