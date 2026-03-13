@@ -1,10 +1,38 @@
 {
-  "Common": {
-    "title": "Gerenciador Financeiro",
-    "loading": "Carregando..."
+  "Navbar": {
+    "login": "Entrar",
+    "register": "Cadastro",
+    "manager": "Gerenciador Financeiro",
+    "language": "Idioma",
+    "pt": "Português (BR)",
+    "en": "Inglês (US)"
   },
-  "Dashboard": {
-    "welcome": "Bem-vindo de volta, {name}",
-    "totalBalance": "Saldo Total"
+  "Home": {
+    "hero": {
+      "title": "Seu Gerenciador",
+      "highlight": "Financeiro Moderno",
+      "description": "Controle suas finanças de forma simples e intuitiva. Acompanhe renda, despesas e metas em um só lugar.",
+      "btnStart": "Começar Agora",
+      "btnLogin": "Já tenho conta"
+    },
+    "features": {
+      "track": {
+        "title": "Rastreie suas Finanças",
+        "description": "Veja um resumo completo da sua situação financeira em tempo real."
+      },
+      "analysis": {
+        "title": "Análise Detalhada",
+        "description": "Entenda seus padrões de gastos com visualizações intuitivas."
+      },
+      "fast": {
+        "title": "Rápido e Simples",
+        "description": "Interface minimalista que prioriza clareza e velocidade."
+      }
+    },
+    "cta": {
+      "title": "Pronto para gerenciar suas finanças?",
+      "description": "Crie uma conta gratuitamente e comece a acompanhar suas finanças hoje.",
+      "btn": "Criar Conta Agora"
+    }
   }
 }

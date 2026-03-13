@@ -1,10 +1,38 @@
 {
-  "Common": {
-    "title": "Finance Manager",
-    "loading": "Loading..."
+  "Navbar": {
+    "login": "Log in",
+    "register": "Sign up",
+    "manager": "Finance Manager",
+    "language": "Language",
+    "pt": "Portuguese (BR)",
+    "en": "English (US)"
   },
-  "Dashboard": {
-    "welcome": "Welcome back, {name}",
-    "totalBalance": "Total Balance"
+  "Home": {
+    "hero": {
+      "title": "Your Modern",
+      "highlight": "Finance Manager",
+      "description": "Control your finances simply and intuitively. Track income, expenses, and goals all in one place.",
+      "btnStart": "Get Started",
+      "btnLogin": "Already have an account?"
+    },
+    "features": {
+      "track": {
+        "title": "Track Your Finances",
+        "description": "Get a complete overview of your financial situation in real-time."
+      },
+      "analysis": {
+        "title": "Detailed Analysis",
+        "description": "Understand your spending patterns with intuitive visualizations."
+      },
+      "fast": {
+        "title": "Fast and Simple",
+        "description": "Minimalist interface that prioritizes clarity and speed."
+      }
+    },
+    "cta": {
+      "title": "Ready to manage your finances?",
+      "description": "Create a free account and start tracking your finances today.",
+      "btn": "Create Account Now"
+    }
   }
 }
