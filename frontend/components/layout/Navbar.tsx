@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Wallet, Globe } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Navbar() {
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  
+  const { isAuthenticated, logoutContext, user } = useAuth(); 
 
   const changeLanguage = (nextLocale: string) => {
     router.replace(pathname, { locale: nextLocale });
@@ -31,6 +34,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
+        
         <Link href="/" className="flex items-center gap-2">
           <div className="rounded-lg bg-primary p-1.5 text-primary-foreground">
             <Wallet size={20} />
@@ -40,6 +44,15 @@ export function Navbar() {
           </span>
         </Link>
 
+        {isAuthenticated && (
+          <nav className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-6 font-medium text-muted-foreground">
+            <Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+            <Link href="/transactions" className="hover:text-primary transition-colors">Transações</Link>
+            <Link href="/goals" className="hover:text-primary transition-colors">Metas</Link>
+            <Link href="/categories" className="hover:text-primary transition-colors">Categorias</Link>
+          </nav>
+        )}
+
         <nav className="hidden md:flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -47,10 +60,7 @@ export function Navbar() {
                 <Globe className="h-5 w-5 text-foreground" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="bg-background border-border"
-            >
+            <DropdownMenuContent align="end" className="bg-background border-border">
               <DropdownMenuItem
                 onClick={() => changeLanguage("pt")}
                 className={`cursor-pointer ${locale === "pt" ? "bg-primary/10 font-bold text-primary" : ""}`}
@@ -68,19 +78,23 @@ export function Navbar() {
 
           <ThemeToggle />
 
-          <Button
-            variant="ghost"
-            asChild
-            className="text-foreground font-medium"
-          >
-            <Link href="/login">{t("login")}</Link>
-          </Button>
-          <Button
-            asChild
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6"
-          >
-            <Link href="/register">{t("register")}</Link>
-          </Button>
+          {!isAuthenticated ? (
+            <>
+              <Button variant="ghost" asChild className="text-foreground font-medium">
+                <Link href="/login">{t("login")}</Link>
+              </Button>
+              <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6">
+                <Link href="/register">{t("register")}</Link>
+              </Button>
+            </>
+          ) : (
+            <div className="flex items-center gap-4">
+               <span className="text-sm font-medium text-foreground">{user?.name}</span>
+               <Button variant="outline" className="rounded-full" onClick={logoutContext}>
+                  Sair
+               </Button>
+            </div>
+          )}
         </nav>
 
         <div className="md:hidden flex items-center gap-2">
@@ -104,19 +118,39 @@ export function Navbar() {
               </SheetTitle>
 
               <div className="flex flex-col gap-4 mt-8">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-lg text-foreground"
-                  asChild
-                >
-                  <Link href="/login">{t("login")}</Link>
-                </Button>
-                <Button
-                  className="w-full justify-start text-lg bg-primary text-primary-foreground rounded-full"
-                  asChild
-                >
-                  <Link href="/register">{t("register")}</Link>
-                </Button>
+                {!isAuthenticated ? (
+                  <>
+                    <Button variant="ghost" className="w-full justify-start text-lg text-foreground" asChild>
+                      <Link href="/login">{t("login")}</Link>
+                    </Button>
+                    <Button className="w-full justify-start text-lg bg-primary text-primary-foreground rounded-full" asChild>
+                      <Link href="/register">{t("register")}</Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="pb-4 mb-2 border-b border-border">
+                       <p className="text-sm text-muted-foreground">Logado como</p>
+                       <p className="font-medium text-lg">{user?.name}</p>
+                    </div>
+                    <Button variant="ghost" className="w-full justify-start text-lg text-foreground" asChild>
+                      <Link href="/dashboard">Dashboard</Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-lg text-foreground" asChild>
+                      <Link href="/transactions">Transações</Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-lg text-foreground" asChild>
+                      <Link href="/goals">Metas</Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-lg text-foreground" asChild>
+                      <Link href="/categories">Categorias</Link>
+                    </Button>
+                    
+                    <Button variant="outline" className="w-full justify-start text-lg mt-4 text-destructive border-destructive/50 hover:bg-destructive/10 hover:text-destructive" onClick={logoutContext}>
+                      Sair
+                    </Button>
+                  </>
+                )}
               </div>
 
               <div className="mt-auto pb-4 flex flex-col gap-4 border-t border-border pt-6">
@@ -140,6 +174,7 @@ export function Navbar() {
                   </Button>
                 </div>
               </div>
+
             </SheetContent>
           </Sheet>
         </div>
