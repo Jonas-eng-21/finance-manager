@@ -12,18 +12,21 @@ export const authService = {
     return data;
   },
 
-  setTokens(accessToken: string, refreshToken: string, expiresIn: number) {
+  setTokens(accessToken: string, refreshToken: string, expiresIn: number, userId?: number) {
     Cookies.set('access_token', accessToken, { expires: expiresIn / 86400, secure: true, sameSite: 'lax' });
     Cookies.set('refresh_token', refreshToken, { expires: 7, secure: true, sameSite: 'lax' });
+    if (userId) Cookies.set('user_id', String(userId), { expires: 7, secure: true, sameSite: 'lax' });
   },
 
-  setGoogleToken(accessToken: string) {
+  setGoogleToken(accessToken: string, userId?: number) {
     Cookies.set('access_token', accessToken, { expires: 1, secure: true, sameSite: 'lax' });
+    if (userId) Cookies.set('user_id', String(userId), { expires: 1, secure: true, sameSite: 'lax' });
   },
 
   clearTokens() {
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
+    Cookies.remove('user_id');
   },
 
   async logout() {
