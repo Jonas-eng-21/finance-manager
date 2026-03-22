@@ -43,6 +43,9 @@ public class TransactionEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "goal_id")
+    private Long goalId;
+
     public TransactionEntity() {}
 
     public Long getId() { return id; }
@@ -71,4 +74,7 @@ public class TransactionEntity {
 
     public LocalDateTime getDeletedAt() { return deletedAt; }
     public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+
+    public Long getGoalId() { return goalId; }
+    public void setGoalId(Long goalId) { this.goalId = goalId; }
 }
