@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Wallet, Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,14 +15,15 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
+import { authService } from "@/services/authService";
+import { handleApiError } from "@/services/apiErrors";
 
 export default function LoginPage() {
   const t = useTranslations("Auth");
   const router = useRouter();
   const { loginContext } = useAuth();
-  
+
   const [showPassword, setShowPassword] = useState(false);
-  const [globalError, setGlobalError] = useState<string | null>(null);
 
   const loginSchema = z.object({
     email: z.string().email({ message: t("errors.invalid_email") }),
@@ -40,48 +42,28 @@ export default function LoginPage() {
     defaultValues: { email: "", password: "" },
   });
 
-const onSubmit = async (data: LoginFormValues) => {
-    setGlobalError(null);
-    
+  const onSubmit = async (data: LoginFormValues) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 422 && responseData.errors) {
-          Object.keys(responseData.errors).forEach((key) => {
-            setError(key as keyof LoginFormValues, {
-              type: "server",
-              message: responseData.errors[key][0],
-            });
-          });
-          return;
-        }
-
-        setGlobalError(responseData.error || t("errors.generic"));
-        return;
-      }
-
+      const responseData = await authService.login(data.email, data.password);
+      toast.success(t("toast.login_success"), { description: t("toast.login_success_desc") });
       loginContext(responseData.access_token, responseData.refresh_token, responseData.expires_in);
-      
       router.push("/dashboard");
 
-    } catch (error) {
-      setGlobalError(t("errors.generic"));
+    } catch (err) {
+      handleApiError(err, t, (fieldErrors) => {
+        Object.keys(fieldErrors).forEach((key) => {
+          setError(key as keyof LoginFormValues, {
+            type: "server",
+            message: fieldErrors[key][0],
+          });
+        });
+      });
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
-      
+
       <div className="flex flex-col items-center mb-8">
         <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
           <Wallet size={24} />
@@ -103,12 +85,6 @@ const onSubmit = async (data: LoginFormValues) => {
 
         <CardContent className="px-8 pb-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            
-            {globalError && (
-              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium">
-                {globalError}
-              </div>
-            )}
 
             {/* CAMPO EMAIL */}
             <div className="space-y-2">
@@ -127,6 +103,7 @@ const onSubmit = async (data: LoginFormValues) => {
               )}
             </div>
 
+            {/* CAMPO SENHA */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-foreground">
@@ -148,7 +125,7 @@ const onSubmit = async (data: LoginFormValues) => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  aria-label={showPassword ? t("login.hide_password") : t("login.show_password")}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>

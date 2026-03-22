@@ -51,12 +51,43 @@
       "google_btn": "Entrar com Google",
       "no_account": "Não tem uma conta?",
       "create_account": "Criar conta",
-      "footer": "© 2026 Finance Manager. Todos os direitos reservados."
+      "footer": "© 2026 Finance Manager. Todos os direitos reservados.",
+      "show_password": "Mostrar senha",
+      "hide_password": "Ocultar senha"
     },
     "errors": {
       "invalid_email": "O e-mail fornecido é inválido.",
       "min_password": "A senha deve ter pelo menos 8 caracteres.",
-      "generic": "Ocorreu um erro ao tentar fazer login. Tente novamente."
+      "generic": "Ocorreu um erro ao tentar fazer login. Tente novamente.",
+      "google_error": "Falha na autenticação com o Google. Tente novamente.",
+      "google_no_token": "Token de autenticação não recebido. Tente novamente.",
+      "google_load_user": "Não foi possível carregar seus dados. Tente novamente.",
+      "invalid_credentials": "E-mail ou senha inválidos.",
+      "invalid_refresh_token": "Sessão expirada. Por favor, faça login novamente.",
+      "email_already_exists": "Este e-mail já está em uso.",
+      "invalid_name": "O nome fornecido é inválido ou muito curto.",
+      "same_password": "A nova senha não pode ser igual à senha atual.",
+      "invalid_current_password": "A senha atual fornecida está incorreta.",
+      "invalid_password": "A senha deve conter pelo menos 8 caracteres.",
+      "invalid_birth_date": "A data de nascimento não pode estar no futuro."
+    },
+    "google_callback": {
+      "loading": "Autenticando com o Google...",
+      "error_title": "Falha na autenticação",
+      "back_to_login": "Voltar para o login"
+    },
+    "toast": {
+      "login_success": "Login realizado com sucesso!",
+      "login_success_desc": "Redirecionando para o painel...",
+      "validation_error": "Verifique os campos",
+      "validation_error_desc": "Corrija os erros destacados no formulário.",
+      "invalid_credentials": "E-mail ou senha inválidos",
+      "too_many_attempts": "Muitas tentativas",
+      "too_many_attempts_desc": "Aguarde alguns minutos antes de tentar novamente.",
+      "server_error": "Erro no servidor",
+      "server_error_desc": "Tente novamente em alguns instantes.",
+      "network_error": "Sem conexão",
+      "network_error_desc": "Verifique sua internet e tente novamente."
     }
   }
 }

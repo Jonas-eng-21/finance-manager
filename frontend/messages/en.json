@@ -51,12 +51,43 @@
       "google_btn": "Log in with Google",
       "no_account": "Don't have an account?",
       "create_account": "Create account",
-      "footer": "© 2026 Finance Manager. All rights reserved."
+      "footer": "© 2026 Finance Manager. All rights reserved.",
+      "show_password": "Show password",
+      "hide_password": "Hide password"
     },
     "errors": {
       "invalid_email": "Please enter a valid email address.",
       "min_password": "Password must be at least 8 characters long.",
-      "generic": "An error occurred while trying to log in. Please try again."
+      "generic": "An error occurred while trying to log in. Please try again.",
+      "google_error": "Google authentication failed. Please try again.",
+      "google_no_token": "Authentication token not received. Please try again.",
+      "google_load_user": "Unable to load your profile. Please try again.",
+      "invalid_credentials": "Invalid email or password.",
+      "invalid_refresh_token": "Your session has expired. Please log in again.",
+      "email_already_exists": "This email address is already registered.",
+      "invalid_name": "The provided name is invalid or too short.",
+      "same_password": "Your new password cannot be the same as your current password.",
+      "invalid_current_password": "The current password you entered is incorrect.",
+      "invalid_password": "Password must be at least 8 characters long.",
+      "invalid_birth_date": "Date of birth cannot be in the future."
+    },
+    "google_callback": {
+      "loading": "Authenticating with Google...",
+      "error_title": "Authentication failed",
+      "back_to_login": "Back to login"
+    },
+    "toast": {
+      "login_success": "Login successful!",
+      "login_success_desc": "Redirecting to your dashboard...",
+      "validation_error": "Check your inputs",
+      "validation_error_desc": "Please fix the highlighted errors in the form.",
+      "invalid_credentials": "Invalid email or password",
+      "too_many_attempts": "Too many attempts",
+      "too_many_attempts_desc": "Please wait a few minutes before trying again.",
+      "server_error": "Server error",
+      "server_error_desc": "Please try again in a few moments.",
+      "network_error": "No connection",
+      "network_error_desc": "Check your internet connection and try again."
     }
   }
 }

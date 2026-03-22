@@ -9,6 +9,8 @@ const protectedRoutes = ['/dashboard', '/transactions', '/goals', '/categories']
 
 const authRoutes = ['/login', '/register'];
 
+const publicCallbackRoutes = ['/auth/google/callback'];
+
 export default function middleware(req: NextRequest) {
   const token = req.cookies.get('access_token')?.value;
   const currentPath = req.nextUrl.pathname;
@@ -18,12 +20,14 @@ export default function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => currentPath.includes(route));
   const isAuthRoute = authRoutes.some((route) => currentPath.includes(route));
 
+  const isPublicCallbackRoute = publicCallbackRoutes.some((route) => currentPath.includes(route));
+
   if (isProtectedRoute && !token) {
     const loginUrl = new URL(`/${locale}/login`, req.url);
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isAuthRoute && token) {
+  if (isAuthRoute && token && !isPublicCallbackRoute) {
     const dashboardUrl = new URL(`/${locale}/dashboard`, req.url);
     return NextResponse.redirect(dashboardUrl);
   }
@@ -32,5 +36,9 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/(pt|en)/:path*']
+  matcher: [
+    '/',
+    '/(pt|en)/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|api).*)'
+  ]
 };
