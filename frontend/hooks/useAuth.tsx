@@ -14,7 +14,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginContext: (accessToken: string, refreshToken: string, expiresIn: number, userData?: User) => void;
+  loginContext: (accessToken: string, refreshToken: string, expiresIn: number, userData?: User) => Promise<void>;
   logoutContext: () => void;
 }
 
@@ -41,14 +41,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
-  const loginContext = (accessToken: string, refreshToken: string, expiresIn: number, userData?: User) => {
+  const loginContext = async (accessToken: string, refreshToken: string, expiresIn: number, userData?: User) => {
     if (refreshToken) {
-      authService.setTokens(accessToken, refreshToken, expiresIn);
+      authService.setTokens(accessToken, refreshToken, expiresIn, userData?.id);
     }
     if (userData) {
       setUser(userData);
     } else {
-      authService.me().then(setUser);
+      const data = await authService.me();
+      setUser(data);
+      Cookies.set('user_id', String(data.id), { expires: 7, secure: true, sameSite: 'lax' });
     }
   };
 

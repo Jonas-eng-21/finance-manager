@@ -46,7 +46,7 @@ export default function LoginPage() {
     try {
       const responseData = await authService.login(data.email, data.password);
       toast.success(t("toast.login_success"), { description: t("toast.login_success_desc") });
-      loginContext(responseData.access_token, responseData.refresh_token, responseData.expires_in);
+      await loginContext(responseData.access_token, responseData.refresh_token, responseData.expires_in);
       router.push("/dashboard");
 
     } catch (err) {
