@@ -1,10 +1,93 @@
 {
-  "Common": {
-    "title": "Finance Manager",
-    "loading": "Loading..."
+  "Navbar": {
+    "login": "Log in",
+    "register": "Sign up",
+    "manager": "Finance Manager",
+    "language": "Language",
+    "pt": "Portuguese (BR)",
+    "en": "English (US)"
   },
-  "Dashboard": {
-    "welcome": "Welcome back, {name}",
-    "totalBalance": "Total Balance"
+  "Home": {
+    "hero": {
+      "title": "Your Modern",
+      "highlight": "Finance Manager",
+      "description": "Control your finances simply and intuitively. Track income, expenses, and goals all in one place.",
+      "btnStart": "Get Started",
+      "btnLogin": "Already have an account?"
+    },
+    "features": {
+      "track": {
+        "title": "Track Your Finances",
+        "description": "Get a complete overview of your financial situation in real-time."
+      },
+      "analysis": {
+        "title": "Detailed Analysis",
+        "description": "Understand your spending patterns with intuitive visualizations."
+      },
+      "fast": {
+        "title": "Fast and Simple",
+        "description": "Minimalist interface that prioritizes clarity and speed."
+      }
+    },
+    "cta": {
+      "title": "Ready to manage your finances?",
+      "description": "Create a free account and start tracking your finances today.",
+      "btn": "Create Account Now"
+    }
+  },
+  "Auth": {
+    "login": {
+      "manager": "Finance Manager",
+      "title": "Welcome back",
+      "subtitle": "Manage your finances simply and calmly.",
+      "email_label": "Email",
+      "email_placeholder": "you@email.com",
+      "password_label": "Password",
+      "password_placeholder": "••••••••",
+      "forgot_password": "Forgot password?",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "divider": "OR CONTINUE WITH",
+      "google_btn": "Log in with Google",
+      "no_account": "Don't have an account?",
+      "create_account": "Create account",
+      "footer": "© 2026 Finance Manager. All rights reserved.",
+      "show_password": "Show password",
+      "hide_password": "Hide password"
+    },
+    "errors": {
+      "invalid_email": "Please enter a valid email address.",
+      "min_password": "Password must be at least 8 characters long.",
+      "generic": "An error occurred while trying to log in. Please try again.",
+      "google_error": "Google authentication failed. Please try again.",
+      "google_no_token": "Authentication token not received. Please try again.",
+      "google_load_user": "Unable to load your profile. Please try again.",
+      "invalid_credentials": "Invalid email or password.",
+      "invalid_refresh_token": "Your session has expired. Please log in again.",
+      "email_already_exists": "This email address is already registered.",
+      "invalid_name": "The provided name is invalid or too short.",
+      "same_password": "Your new password cannot be the same as your current password.",
+      "invalid_current_password": "The current password you entered is incorrect.",
+      "invalid_password": "Password must be at least 8 characters long.",
+      "invalid_birth_date": "Date of birth cannot be in the future."
+    },
+    "google_callback": {
+      "loading": "Authenticating with Google...",
+      "error_title": "Authentication failed",
+      "back_to_login": "Back to login"
+    },
+    "toast": {
+      "login_success": "Login successful!",
+      "login_success_desc": "Redirecting to your dashboard...",
+      "validation_error": "Check your inputs",
+      "validation_error_desc": "Please fix the highlighted errors in the form.",
+      "invalid_credentials": "Invalid email or password",
+      "too_many_attempts": "Too many attempts",
+      "too_many_attempts_desc": "Please wait a few minutes before trying again.",
+      "server_error": "Server error",
+      "server_error_desc": "Please try again in a few moments.",
+      "network_error": "No connection",
+      "network_error_desc": "Check your internet connection and try again."
+    }
   }
 }

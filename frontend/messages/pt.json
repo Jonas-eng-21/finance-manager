@@ -1,10 +1,93 @@
 {
-  "Common": {
-    "title": "Gerenciador Financeiro",
-    "loading": "Carregando..."
+  "Navbar": {
+    "login": "Entrar",
+    "register": "Cadastro",
+    "manager": "Gerenciador Financeiro",
+    "language": "Idioma",
+    "pt": "Português (BR)",
+    "en": "Inglês (US)"
   },
-  "Dashboard": {
-    "welcome": "Bem-vindo de volta, {name}",
-    "totalBalance": "Saldo Total"
+  "Home": {
+    "hero": {
+      "title": "Seu Gerenciador",
+      "highlight": "Financeiro Moderno",
+      "description": "Controle suas finanças de forma simples e intuitiva. Acompanhe renda, despesas e metas em um só lugar.",
+      "btnStart": "Começar Agora",
+      "btnLogin": "Já tenho conta"
+    },
+    "features": {
+      "track": {
+        "title": "Rastreie suas Finanças",
+        "description": "Veja um resumo completo da sua situação financeira em tempo real."
+      },
+      "analysis": {
+        "title": "Análise Detalhada",
+        "description": "Entenda seus padrões de gastos com visualizações intuitivas."
+      },
+      "fast": {
+        "title": "Rápido e Simples",
+        "description": "Interface minimalista que prioriza clareza e velocidade."
+      }
+    },
+    "cta": {
+      "title": "Pronto para gerenciar suas finanças?",
+      "description": "Crie uma conta gratuitamente e comece a acompanhar suas finanças hoje.",
+      "btn": "Criar Conta Agora"
+    }
+  },
+  "Auth": {
+    "login": {
+      "manager": "Gerenciador Financeiro",
+      "title": "Bem-vindo de volta",
+      "subtitle": "Gerencie suas finanças de forma simples e calma.",
+      "email_label": "E-mail",
+      "email_placeholder": "seu@email.com",
+      "password_label": "Senha",
+      "password_placeholder": "••••••••",
+      "forgot_password": "Esqueceu a senha?",
+      "submit": "Entrar",
+      "submitting": "Entrando...",
+      "divider": "OU CONTINUE COM",
+      "google_btn": "Entrar com Google",
+      "no_account": "Não tem uma conta?",
+      "create_account": "Criar conta",
+      "footer": "© 2026 Finance Manager. Todos os direitos reservados.",
+      "show_password": "Mostrar senha",
+      "hide_password": "Ocultar senha"
+    },
+    "errors": {
+      "invalid_email": "O e-mail fornecido é inválido.",
+      "min_password": "A senha deve ter pelo menos 8 caracteres.",
+      "generic": "Ocorreu um erro ao tentar fazer login. Tente novamente.",
+      "google_error": "Falha na autenticação com o Google. Tente novamente.",
+      "google_no_token": "Token de autenticação não recebido. Tente novamente.",
+      "google_load_user": "Não foi possível carregar seus dados. Tente novamente.",
+      "invalid_credentials": "E-mail ou senha inválidos.",
+      "invalid_refresh_token": "Sessão expirada. Por favor, faça login novamente.",
+      "email_already_exists": "Este e-mail já está em uso.",
+      "invalid_name": "O nome fornecido é inválido ou muito curto.",
+      "same_password": "A nova senha não pode ser igual à senha atual.",
+      "invalid_current_password": "A senha atual fornecida está incorreta.",
+      "invalid_password": "A senha deve conter pelo menos 8 caracteres.",
+      "invalid_birth_date": "A data de nascimento não pode estar no futuro."
+    },
+    "google_callback": {
+      "loading": "Autenticando com o Google...",
+      "error_title": "Falha na autenticação",
+      "back_to_login": "Voltar para o login"
+    },
+    "toast": {
+      "login_success": "Login realizado com sucesso!",
+      "login_success_desc": "Redirecionando para o painel...",
+      "validation_error": "Verifique os campos",
+      "validation_error_desc": "Corrija os erros destacados no formulário.",
+      "invalid_credentials": "E-mail ou senha inválidos",
+      "too_many_attempts": "Muitas tentativas",
+      "too_many_attempts_desc": "Aguarde alguns minutos antes de tentar novamente.",
+      "server_error": "Erro no servidor",
+      "server_error_desc": "Tente novamente em alguns instantes.",
+      "network_error": "Sem conexão",
+      "network_error_desc": "Verifique sua internet e tente novamente."
+    }
   }
 }
