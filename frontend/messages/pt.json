@@ -89,5 +89,47 @@
       "network_error": "Sem conexão",
       "network_error_desc": "Verifique sua internet e tente novamente."
     }
+  },
+  "Dashboard": {
+    "header": {
+      "title": "Gerenciador Financeiro",
+      "nav_dashboard": "Painel",
+      "nav_transactions": "Transações",
+      "nav_goals": "Metas",
+      "nav_categories": "Categorias",
+      "logout": "Sair",
+      "greeting": "Olá"
+    },
+    "balance": {
+      "title": "Saldo Total",
+      "month": "Mês atual",
+      "trend_up": "em alta este mês",
+      "trend_down": "em queda este mês"
+    },
+    "kpi": {
+      "income": "Receitas",
+      "expense": "Despesas",
+      "this_month": "Este mês"
+    },
+    "goals": {
+      "title": "Metas Financeiras",
+      "empty": "Nenhuma meta ativa no momento.",
+      "status_in_progress": "Em andamento",
+      "status_completed": "Concluída",
+      "status_overdue": "Atrasada",
+      "progress": "concluído",
+      "target": "Meta",
+      "saved": "Salvo",
+      "deadline": "Prazo"
+    },
+    "transactions": {
+      "title": "Transações Recentes",
+      "empty": "Nenhuma transação registrada.",
+      "income": "Receita",
+      "expense": "Despesa"
+    },
+    "loading": "Carregando painel...",
+    "error": "Erro ao carregar dados. Tente novamente.",
+    "retry": "Tentar novamente"
   }
 }
