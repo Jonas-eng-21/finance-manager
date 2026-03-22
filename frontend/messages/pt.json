@@ -69,7 +69,23 @@
       "same_password": "A nova senha não pode ser igual à senha atual.",
       "invalid_current_password": "A senha atual fornecida está incorreta.",
       "invalid_password": "A senha deve conter pelo menos 8 caracteres.",
-      "invalid_birth_date": "A data de nascimento não pode estar no futuro."
+      "invalid_birth_date": "A data de nascimento não pode estar no futuro.",
+      "financial": {
+        "category_already_exists": "Já existe uma categoria com este nome.",
+        "category_not_found": "Categoria não encontrada.",
+        "access_denied": "Você não tem permissão para esta operação.",
+        "transaction_not_found": "Transação não encontrada.",
+        "goal_invalid_type": "Apenas receitas podem ser vinculadas a metas.",
+        "category_deleted": "Não é possível usar uma categoria excluída.",
+        "invalid_date_range": "A data inicial não pode ser posterior à data final.",
+        "invalid_amount_range": "O valor mínimo não pode ser maior que o valor máximo.",
+        "month_invalid": "Formato de mês inválido. Use AAAA-MM.",
+        "goal_name_duplicated": "Você já possui uma meta com este nome.",
+        "goal_not_found": "Meta financeira não encontrada.",
+        "goal_already_deleted": "A meta já foi removida.",
+        "goal_already_archived": "A meta já foi arquivada.",
+        "conflict": "Erro de integridade: esta informação já está em uso."
+      }
     },
     "google_callback": {
       "loading": "Autenticando com o Google...",
@@ -87,7 +103,10 @@
       "server_error": "Erro no servidor",
       "server_error_desc": "Tente novamente em alguns instantes.",
       "network_error": "Sem conexão",
-      "network_error_desc": "Verifique sua internet e tente novamente."
+      "network_error_desc": "Verifique sua internet e tente novamente.",
+      "not_found": "Não encontrado",
+      "conflict": "Conflito de dados",
+      "forbidden": "Acesso negado"
     }
   },
   "Dashboard": {

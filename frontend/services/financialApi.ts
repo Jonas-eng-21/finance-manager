@@ -1,15 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-/**
- * Instância Axios dedicada ao service-financial (porta 8003).
- * Espelha a configuração do api.ts (service-identity), mas aponta
- * para NEXT_PUBLIC_FINANCIAL_API_URL e injeta o header X-User-Id
- * automaticamente via interceptor.
- *
- * O userId é lido do cookie 'user_id' — populado em setUserId()
- * após o login bem-sucedido.
- */
+
 export const financialApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_FINANCIAL_API_URL,
   headers: {
@@ -18,7 +10,6 @@ export const financialApi = axios.create({
   },
 });
 
-// Injeta Bearer token e X-User-Id em toda requisição
 financialApi.interceptors.request.use(
   (config) => {
     const token = Cookies.get('access_token');

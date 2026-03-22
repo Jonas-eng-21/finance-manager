@@ -1,6 +1,5 @@
 import { financialApi } from './financialApi';
 
-// ─── Tipos espelhando os DTOs do service-financial ──────────────────────────
 
 export type TransactionType = 'INCOME' | 'EXPENSE';
 
@@ -8,7 +7,7 @@ export interface MonthlySummary {
   totalIncome: number;
   totalExpense: number;
   balance: number;
-  month: string; // "YYYY-MM"
+  month: string;
 }
 
 export interface Transaction {
@@ -17,7 +16,7 @@ export interface Transaction {
   amount: number;
   categoryId: number | null;
   description: string | null;
-  transactionDate: string;   // ISO date "YYYY-MM-DD"
+  transactionDate: string;  
   createdAt: string;
   goalId: number | null;
 }
@@ -53,12 +52,10 @@ export interface TransactionSummary {
   balance: number;
 }
 
-// ─── Métodos do serviço ──────────────────────────────────────────────────────
 
 export const financialService = {
   /**
-   * Resumo mensal: receitas, despesas e saldo.
-   * @param month - "YYYY-MM" (padrão: mês atual)
+   * @param month
    */
   async getMonthlySummary(month?: string): Promise<MonthlySummary> {
     const params = month ? { month } : {};
@@ -66,9 +63,7 @@ export const financialService = {
     return data;
   },
 
-  /**
-   * Transações recentes: paginadas, ordenadas por data desc, tamanho padrão 5.
-   */
+
   async getRecentTransactions(size = 5): Promise<PaginatedResult<Transaction, TransactionSummary>> {
     const { data } = await financialApi.get<PaginatedResult<Transaction, TransactionSummary>>(
       '/api/transactions',
@@ -77,9 +72,7 @@ export const financialService = {
     return data;
   },
 
-  /**
-   * Metas ativas: ordenadas por targetDate asc, tamanho padrão 4 para o dashboard.
-   */
+
   async getActiveGoals(size = 4): Promise<PaginatedResult<Goal>> {
     const { data } = await financialApi.get<PaginatedResult<Goal>>(
       '/api/goals',

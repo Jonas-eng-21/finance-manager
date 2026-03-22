@@ -69,7 +69,23 @@
       "same_password": "Your new password cannot be the same as your current password.",
       "invalid_current_password": "The current password you entered is incorrect.",
       "invalid_password": "Password must be at least 8 characters long.",
-      "invalid_birth_date": "Date of birth cannot be in the future."
+      "invalid_birth_date": "Date of birth cannot be in the future.",
+      "financial": {
+        "category_already_exists": "A category with this name already exists.",
+        "category_not_found": "Category not found.",
+        "access_denied": "You do not have permission for this operation.",
+        "transaction_not_found": "Transaction not found.",
+        "goal_invalid_type": "Only income transactions can be linked to goals.",
+        "category_deleted": "Cannot use a deleted category.",
+        "invalid_date_range": "Start date cannot be after end date.",
+        "invalid_amount_range": "Minimum amount cannot be greater than maximum amount.",
+        "month_invalid": "Invalid month format. Use YYYY-MM.",
+        "goal_name_duplicated": "You already have a goal with this name.",
+        "goal_not_found": "Financial goal not found.",
+        "goal_already_deleted": "This goal has already been deleted.",
+        "goal_already_archived": "This goal has already been archived.",
+        "conflict": "Data conflict: this information is already in use."
+      }
     },
     "google_callback": {
       "loading": "Authenticating with Google...",
@@ -87,7 +103,10 @@
       "server_error": "Server error",
       "server_error_desc": "Please try again in a few moments.",
       "network_error": "No connection",
-      "network_error_desc": "Check your internet connection and try again."
+      "network_error_desc": "Check your internet connection and try again.",
+      "not_found": "Not found",
+      "conflict": "Data conflict",
+      "forbidden": "Access denied"
     }
   },
   "Dashboard": {
