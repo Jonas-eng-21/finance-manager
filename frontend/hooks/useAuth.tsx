@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const userData = await authService.me();
           setUser(userData);
-        } catch (error) {
+        } catch {
           authService.clearTokens();
         }
       }
@@ -42,7 +42,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loginContext = (accessToken: string, refreshToken: string, expiresIn: number, userData?: User) => {
-    authService.setTokens(accessToken, refreshToken, expiresIn);
+    if (refreshToken) {
+      authService.setTokens(accessToken, refreshToken, expiresIn);
+    }
     if (userData) {
       setUser(userData);
     } else {
