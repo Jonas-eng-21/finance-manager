@@ -31,7 +31,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_USER: ${DB_USERNAME}
     ports:
-      - "3308:3306"
+      - "3309:3306"
     volumes:
       - financial-mysql-data:/var/lib/mysql
     networks:

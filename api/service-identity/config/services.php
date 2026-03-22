@@ -24,6 +24,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/api/auth/google/callback'),
     ],
 
+    'frontend' => [
+        'url' => env('FRONTEND_URL', 'http://localhost:3000'),
+        'google_callback_path' => env('FRONTEND_GOOGLE_CALLBACK_PATH', '/auth/google/callback'),
+    ],
+
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],

@@ -52,7 +52,7 @@ class AuthController extends Controller
         return Socialite::driver('google')->stateless()->redirect();
     }
 
-    public function handleGoogleCallback(GoogleAuthUseCase $useCase): JsonResponse
+    public function handleGoogleCallback(GoogleAuthUseCase $useCase): JsonResponse|\Illuminate\Http\RedirectResponse
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
@@ -65,7 +65,12 @@ class AuthController extends Controller
 
             $token = $useCase->execute($dto);
 
-            return response()->json(['token' => $token], 200);
+            $frontendUrl = config('services.frontend.url');
+            $callbackPath = config('services.frontend.google_callback_path');
+
+            $frontendCallback = rtrim($frontendUrl, '/') . '/' . ltrim($callbackPath, '/');
+
+            return redirect($frontendCallback . '?token=' . $token);
 
         } catch (\Exception $e) {
             return response()->json(['error' => 'Google Authentication Failed'], 401);
